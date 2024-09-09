@@ -29,16 +29,43 @@ void limparBuffer()
 
 void cadastroUser()
 {
-    char buffer[MAX_NOME];
-    Usuario novoUsuario; // Variavel temporaria para novo usuario
+    char buffer[MAX_NOME]; //variavel temporario para armazenar a linha lida
 
-    if (idUsuario >= MAX_USUARIOS)
-    {
-        puts("Numero de usuarios cadastrados excedido!");
+    FILE *arquivo = fopen("idusersenha.txt", "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
         return;
     }
+
+    
+    int cont = 0;
+
+    // Lê cada linha do arquivo
+    while (fgets(buffer, sizeof(buffer), arquivo) != NULL) {    //divide as linhas com id, usuario e senha
+        cont++;
+        
+        // Dividir a linha em id, usuario, senha
+        int id;
+        char usuario[50], senha[50];
+
+        // Parseia a linha para os campos id, usuario, senha
+        sscanf(buffer, "%d|%[^|]|%s", &id, usuario, senha);
+
+        printf("ID: %d\n", id);
+        printf("Usuário: %s\n", usuario);
+        printf("Senha: %s\n\n", senha);
+    }
+
+    printf("Total de linhas: %d\n", cont); //aapenas para ter o controle de quantas linhas existem 
+
+    fclose(arquivo);
+
+    
+    Usuario novoUsuario; // Variavel temporaria para novo usuario
+
+    
     // LER O NOME DO USUARIO-----------------------------------------------------------------------------------
-    FILE *arquivo = fopen("idusersenha.txt", "r"); // Abertura do arquivo no modo de adicao
+   arquivo = fopen("idusersenha.txt", "r"); // Abertura do arquivo no modo de adicao
 
     if (arquivo == NULL)
     { // se arquivo fol nulo
@@ -47,7 +74,7 @@ void cadastroUser()
     }
     int linhas = 0;
     char ch;
-    while ((ch = fgetc(arquivo)) != EOF)
+    while ((ch = fgetc(arquivo)) != EOF) //le cada caractere ate encontrar um \n no fim da linha e apos isso pula para a proxima linha, para saber quantos usuaarios existem
     {
         if (ch == '\n')
         {
@@ -55,15 +82,22 @@ void cadastroUser()
             linhas++;
         }
     }
+    if (idUsuario >= MAX_USUARIOS)// para saber se o numero de usuarios foi excedido   
+    {
+        puts("Numero de usuarios cadastrados excedido!");
+        return;
+    }
+    
     printf("\tDigite o nome de usuario: ");
     if (fgets(novoUsuario.nome, MAX_NOME, stdin) != NULL)
     {
         novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0';
+        
         if (strlen(novoUsuario.nome) >= 4)
         {
-
-            while (fgets(buffer, MAX_NOME, arquivo) != NULL) // importante o !NULL faz o fgets retornar apenas quando chegar ao fim do arquivo
-            {                                                // verifica se o usuario ja existe
+            
+            while (fgets(buffer, MAX_NOME, arquivo) != NULL)        // importante o !NULL faz o fgets retornar apenas quando chegar ao fim do arquivo
+            {                                                       // verifica se o usuario ja existe
                 buffer[strcspn(buffer, "\n")] = '\0';
                 if (strcmp(buffer, novoUsuario.nome) == 0)
                 {
@@ -102,6 +136,7 @@ void cadastroUser()
     }
     idUsuario = 0;
     linhas = 0;
+    cont = 0;
 }
 
 int autenticarUser()
