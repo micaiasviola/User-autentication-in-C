@@ -1,6 +1,0 @@
-1|mica|1234
-2|mica|1234
-3|mica|1234
-4|micaias|viola
-5|mica|123
-6|milca|12334
