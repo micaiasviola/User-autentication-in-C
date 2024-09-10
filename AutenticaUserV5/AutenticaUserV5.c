@@ -212,7 +212,7 @@ int main()
 
     // Carrega Usuarios existentes no início do programa
     lerUsuarios();
-    processarUsuarios();
+    //processarUsuarios();
     do
     {
         opcao = obterOpcao();
