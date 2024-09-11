@@ -21,7 +21,7 @@ int idUsuario = 0; // inicia o id sempre em 0 para começar a varredura
 int ident = 0;
 int excedido = 0;
 char senhaADM[] = "1234";
-char senhaAdmin[1];
+char senhaAdmin[MAX_SENHA];
 int position;
 char adm[] = "adm";
 char caixa[] = "caixa";
@@ -69,7 +69,7 @@ void lerUsuarios() // função que executa a leitura do banco de dados, armazena
                 split = strtok(NULL, "|"); // ultimo token
 
 
-                printf("%s\n", split);
+                //printf("%s\n", split);
 
                 strncpy(user[idUsuario].cargo, split, MAX_SENHA - 1);
                 user[idUsuario].cargo[MAX_SENHA - 1] = '\0';
@@ -87,12 +87,10 @@ void lerUsuarios() // função que executa a leitura do banco de dados, armazena
 }
 
 void cadastrarUsuario() // função responsavel pelo cadastro de usuarios, verifica as condições para cadastro
-
 {
-
     if (excedido == 1)
     {
-        printf("Numero maximo de usuarios excedidos");
+        printf("Numero maximo de usuarios excedidos\n");
         return;
     }
 
@@ -123,7 +121,7 @@ void cadastrarUsuario() // função responsavel pelo cadastro de usuarios, verif
                     }
                     if (usuarioExiste) // condição de controle para usuario existente
                     {
-                        printf("Usuario existente");
+                        printf("Usuario existente\n");
                     }
                     else // caso o usuario não existe ele ira para essa condição, no caso aqui sera feito o cadastro
                     {
@@ -133,62 +131,68 @@ void cadastrarUsuario() // função responsavel pelo cadastro de usuarios, verif
                             novoUsuario.senha[strcspn(novoUsuario.senha, "\n")] = '\0'; // retira a quebra de linha no fim da string
                             if (strlen(novoUsuario.senha) >= 4)                         // se senha for maior ou igual a 4 caracteres
                             {
-                                printf("tecle 1 para adm\ntecle 2 para caixa");
-                                scanf("%i", &position);
-                                if(position == 1){
-                                strcpy(novoUsuario.cargo, adm);
-                                user[idUsuario] = novoUsuario; // endereça os valores .nome, .senha
-                                idUsuario++;
-                                FILE *escrevearquivo = fopen("idusersenha.txt", "a");
-                                if (escrevearquivo == NULL)
+                                printf("Digite 1 para adm ou 2 para caixa: ");
+                                if (scanf("%d", &position) == 1)
                                 {
-                                    perror("Erro ao abrir arquivo");
-                                    return;
+                                    limpabuffer(); // Limpar buffer após scanf
+
+                                    if (position == 1)
+                                    {
+                                        strcpy(novoUsuario.cargo, adm);
+                                    }
+                                    else if (position == 2)
+                                    {
+                                        strcpy(novoUsuario.cargo, caixa);
+                                    }
+                                    else
+                                    {
+                                        printf("Opção inválida. Usuário não cadastrado.\n");
+                                        return;
+                                    }
+
+                                    user[idUsuario] = novoUsuario; // endereça os valores .nome, .senha
+                                    idUsuario++;
+                                    FILE *escrevearquivo = fopen("idusersenha.txt", "a");
+                                    if (escrevearquivo == NULL)
+                                    {
+                                        perror("Erro ao abrir arquivo");
+                                        return;
+                                    }
+                                    fprintf(escrevearquivo, "%d|%s|%s|%s\n", idUsuario, user[idUsuario - 1].nome, user[idUsuario - 1].senha, user[idUsuario - 1].cargo);
+                                    fclose(escrevearquivo);
+
+                                    printf("Usuario cadastrado com sucesso!\n");
                                 }
-                                fprintf(escrevearquivo, "%d|%s|%s|%s\n", idUsuario, user[idUsuario - 1].nome, user[idUsuario - 1].senha, user[idUsuario-1].cargo);
-                                fclose(escrevearquivo);
-                                }else if(position == 2){
-                                    strcpy(novoUsuario.cargo, caixa);
-                                user[idUsuario] = novoUsuario; // endereça os valores .nome, .senha
-                                idUsuario++;
-                                FILE *escrevearquivo = fopen("idusersenha.txt", "a");
-                                if (escrevearquivo == NULL)
+                                else
                                 {
-                                    perror("Erro ao abrir arquivo");
-                                    return;
+                                    printf("Erro ao ler a opção de cargo\n");
+                                    limpabuffer(); // Limpar buffer após scanf
                                 }
-                                fprintf(escrevearquivo, "%d|%s|%s|%s\n", idUsuario, user[idUsuario - 1].nome, user[idUsuario - 1].senha, user[idUsuario-1].cargo);
-                                fclose(escrevearquivo);
-
-                                }
-
                             }
                             else
                             {
-                                printf("Quantidade minima de 4 caracteres");
-                                return;
+                                printf("Senha deve ter no mínimo 4 caracteres\n");
                             }
                         }
                         else
                         {
-                            printf("Erro ao ler a senha");
+                            printf("Erro ao ler a senha\n");
                         }
                     }
                 }
                 else
                 {
-                    printf("Quantidade minima de 4 caracteres");
+                    printf("Nome deve ter no mínimo 4 caracteres\n");
                 }
             }
             else
             {
-                printf("Erro ao ler o nome de usuario");
+                printf("Erro ao ler o nome de usuario\n");
             }
         }
         else
         {
-            perror("\tSenha incorreta!");
-            return;
+            printf("Senha incorreta!\n");
         }
     }
 }
@@ -201,21 +205,20 @@ int autentica()
 
     printf("\tDigite o nome de usuario: ");
     fgets(confirmaNome, MAX_NOME, stdin);
-
     confirmaNome[strcspn(confirmaNome, "\n")] = '\0';
 
     printf("\tDigite a senha: ");
     fgets(confirmaSenha, MAX_SENHA, stdin);
     confirmaSenha[strcspn(confirmaSenha, "\n")] = '\0';
+
     int i = 0;
     while (i < idUsuario)
     {
-
         if (strcmp(confirmaNome, user[i].nome) == 0)
         {
             if (strcmp(confirmaSenha, user[i].senha) == 0)
             {
-                ident = i; // identifico a posição do usuario para poder printar fora da função
+                ident = i;
                 return 1;
             }
         }
@@ -226,7 +229,7 @@ int autentica()
 
 int obterOpcao()
 {
-    int opcao;
+    int opcao = 0;
     char buffer[100];
 
     while (1)
@@ -254,25 +257,14 @@ int obterOpcao()
         }
     }
 }
-void processarUsuarios()
-{
-    for (int i = 0; i < idUsuario; i++)
-    {
-        printf("ID: %d\n", user[i].id);
-        printf("Nome: %s\n", user[i].nome);
-        printf("Senha: %s\n", user[i].senha);
-        printf("Cargo: %s\n", user[i].cargo);
-    }
-}
+
 int main()
 {
     setlocale(LC_ALL, "pt_BR.UTF-8");
     int opcao;
 
-    // Carrega Usuarios existentes no início do programa
     lerUsuarios();
 
-    processarUsuarios();
     do
     {
         opcao = obterOpcao();
@@ -280,7 +272,6 @@ int main()
         switch (opcao)
         {
         case 1:
-
             cadastrarUsuario();
             break;
         case 2:
@@ -290,7 +281,6 @@ int main()
                 printf("Senha: %s\n", user[ident].senha);
                 printf("ID: %i\n", user[ident].id);
                 printf("Cargo: %s\n", user[ident].cargo);
-                limpabuffer();
             }
             else
             {
