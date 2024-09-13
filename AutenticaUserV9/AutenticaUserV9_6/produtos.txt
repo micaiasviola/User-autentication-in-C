@@ -1,0 +1,9 @@
+1|manga|5,50
+2|banana|3,50
+3|abacaxi|7,00
+4|manjericao|20,00
+5|tomate|3,00
+6|goiaba|3,50
+7|rucula|3,00
+8|alface|2,30
+9|jabuticaba|30,00
