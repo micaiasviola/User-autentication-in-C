@@ -1,0 +1,6 @@
+1|micaias|1234|adm
+2|1234|1234|adm
+3|5555|5555|caixa
+4|leonardo|1234|caixa
+5|agata|1234|caixa
+6|vanessa|1234|caixa
