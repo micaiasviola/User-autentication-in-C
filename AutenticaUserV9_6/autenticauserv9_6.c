@@ -200,8 +200,27 @@ void cadastrarProduto()
                         {
 
                             if(strcmp(NovoP.nome, produto[i].nome) == 0){
-                            printf("produto %i id %s preco %.2f existe!", produto[i].id, produto[i].nome, produto[i].preco);
-                            return;
+                            printf("\tEste item ja esta cadastrado na ba base de dados! Deseja alterar o valor? (s) sim (n) nao!", produto[i].id, produto[i].nome, produto[i].preco);
+                            char resposta[10];
+
+                            if(fgets(resposta, sizeof(resposta), stdin)){
+                            resposta[strcspn(resposta, "\n")] = '\0';
+
+
+                                if (strcmp(resposta, "s") == 0 || strcmp(resposta, "S") == 0) {
+                                    printf("Usuário escolheu sim. Procedendo com a alteração...\n");
+
+                                } else if (strcmp(resposta, "n") == 0 || strcmp(resposta, "N") == 0) {
+                                    printf("Usuário escolheu não. Cancelando a alteração...\n");
+
+                                } else {
+                                    printf("Resposta inválida. Por favor, responda com 's' para sim ou 'n' para não.\n");
+                            }
+                            } else {
+                                printf("Erro ao ler a entrada.\n");
+                            }
+                            getch();
+                            cadastrarProduto();
                             }
                         }
                         strcpy(produto[idproduto].nome, NovoP.nome);
@@ -214,8 +233,8 @@ void cadastrarProduto()
                                 produto[idproduto] = NovoP;
                                 idproduto++;
                                 FILE *escreveProduto = fopen("produtos.txt","a");
-
-                                fprintf(escreveProduto, "\n\tProduto cadastrado com sucesso\n\t%i|%s|%.2f\n", idproduto, produto[idproduto-1].nome, produto[idproduto-1].preco);
+                                printf("\n\tProduto cadastrado com sucesso\n");
+                                fprintf(escreveProduto, "%i|%s|%.2f\n", idproduto, produto[idproduto-1].nome, produto[idproduto-1].preco);
                                 fclose(escreveProduto);
                         }
 
