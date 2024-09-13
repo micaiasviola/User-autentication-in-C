@@ -1,2 +1,0 @@
-1|banana|3,50
-2|banands|3,50

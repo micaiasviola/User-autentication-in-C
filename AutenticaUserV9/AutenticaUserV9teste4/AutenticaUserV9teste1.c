@@ -8,7 +8,6 @@
 #define MAX_NOME 30
 #define MAX_SENHA 20
 
-
 int limpar_tela()
 {
     system(
@@ -27,7 +26,7 @@ typedef struct
 } estrutura;
 
 /***VARIAVEIS GLOBAIS****/
-int idUsuario = 0; // inicia o id sempre em 0 para começar a varredura
+int idUsuario = 0; // inicia o id sempre em 0 para comeï¿½ar a varredura
 int ident = 0;
 int excedido = 0;
 char senhaADM[] = "1234";
@@ -37,16 +36,16 @@ char adm[] = "adm";
 char caixa[] = "caixa";
 estrutura user[MAX_USUARIOS];
 
-void limpabuffer() // função para limpar o buffer apos um endereço de memoria ser escrito, chamo após os fgets
+void limpabuffer() // funï¿½ï¿½o para limpar o buffer apos um endereï¿½o de memoria ser escrito, chamo apï¿½s os fgets
 {
     int c;
     while ((c = getchar()) != '\n' && c != EOF)
     {
-        // corpo vazio para limpar o endereço de memoria
+        // corpo vazio para limpar o endereï¿½o de memoria
     }
 }
 
-void lerUsuarios() // função que executa a leitura do banco de dados, armazena a quantidade de cadastros em idUsuario
+void lerUsuarios() // funï¿½ï¿½o que executa a leitura do banco de dados, armazena a quantidade de cadastros em idUsuario
 {
     FILE *leitura = fopen("idusersenha.txt", "r");
     if (leitura == NULL)
@@ -59,19 +58,19 @@ void lerUsuarios() // função que executa a leitura do banco de dados, armazena a
     while (fgets(user[idUsuario].nome, MAX_NOME, leitura) != NULL)
     {
         user[idUsuario].nome[strcspn(user[idUsuario].nome, "\n")] = '\0';
-        char *split = strtok(user[idUsuario].nome, "|"); // primeiro token a ser pego da tabela é o id, portanto split esta valendo o id no momento
+        char *split = strtok(user[idUsuario].nome, "|"); // primeiro token a ser pego da tabela ï¿½ o id, portanto split esta valendo o id no momento
 
         user[idUsuario].id = atoi(split); // funcao atoi() transforma numeros strings em numeros inteiros
                                           // printf("%s\n", user[idUsuario].id);
         if (split != NULL)
         {
 
-            split = strtok(NULL, "|"); // agora split recebe o nome, pois foi chamado a função null dele, então ele entende como 1token é nulo e apos a divisão ele ira armazenar o 2token que no caso é o nome
+            split = strtok(NULL, "|"); // agora split recebe o nome, pois foi chamado a funï¿½ï¿½o null dele, entï¿½o ele entende como 1token ï¿½ nulo e apos a divisï¿½o ele ira armazenar o 2token que no caso ï¿½ o nome
             strcpy(user[idUsuario].nome, split);
             // printf("%s\n", user[idUsuario].nome);
             if (split != NULL)
             {
-                split = strtok(NULL, "|"); // aqui o split ira ignorar o token atual (2) e ler a partir da proxima divisão, que no caso sera o 3token == senha
+                split = strtok(NULL, "|"); // aqui o split ira ignorar o token atual (2) e ler a partir da proxima divisï¿½o, que no caso sera o 3token == senha
                 strncpy(user[idUsuario].senha, split, MAX_SENHA - 1);
                 // printf("%s\n", user[idUsuario].senha);
                 user[idUsuario].senha[MAX_SENHA - 1] = '\0'; // define o ultimo caractere de .senha como nulo
@@ -97,59 +96,62 @@ void lerUsuarios() // função que executa a leitura do banco de dados, armazena a
 #define MAX_LINHA 100
 #define MAX_PRODUTO 100
 
-typedef struct{
+typedef struct
+{
     char nome[MAX_NOME];
     int id;
     float preco;
-}structproduto;
+} structproduto;
 
 structproduto produto[MAX_PRODUTO];
 int idproduto = 0;
-void lerProduto() {
+void lerProduto()
+{
     FILE *lerproduto = fopen("produtos.txt", "r");
-    if (lerproduto == NULL) {
+    if (lerproduto == NULL)
+    {
         perror("Erro ao abrir o arquivo");
         return;
     }
 
     char linha[MAX_LINHA];
-idproduto = 0;
-    // Lê a primeira linha do arquivo
-    while (fgets(linha, sizeof(linha), lerproduto) != NULL){
+    idproduto = 0;
+    // Lï¿½ a primeira linha do arquivo
+    while (fgets(linha, sizeof(linha), lerproduto) != NULL)
+    {
         // Remove o caractere de nova linha, se presente
         linha[strcspn(linha, "\n")] = '\0';
         char *parse = strtok(linha, "|");
 
-
         produto[idproduto].id = atoi(parse);
         printf("%i|", produto[idproduto].id);
-        if(parse != NULL){
+        if (parse != NULL)
+        {
 
             parse = strtok(NULL, "|");
-            strcpy(produto[idproduto].nome,parse);
+            strcpy(produto[idproduto].nome, parse);
 
             printf("%s|", produto[idproduto].nome);
 
-            if(parse != NULL){
-                    parse = strtok(NULL, "|");
-                    produto[idproduto].preco = (float)atof(parse);
-                    printf("%.2f\n", produto[idproduto].preco);
-                    idproduto++;
-                /*if(idproduto >= MAX_PRODUTO){
+            if (parse != NULL)
+            {
+                parse = strtok(NULL, "|");
+                produto[idproduto].preco = (float)atof(parse);
+                printf("%.2f\n", produto[idproduto].preco);
+                idproduto++;
+                if (idproduto >= MAX_PRODUTO)
+                {
                     limpar_tela();
                     printf("numero de produtos maximos cadastrados excedidos!");
-                break;
-                }*/
+                    break;
+                }
             }
         }
-
-
-
     }
 
     fclose(lerproduto);
 }
-void cadastrarUsuario() // função responsavel pelo cadastro de usuarios, verifica as condições para cadastro
+void cadastrarUsuario() // funï¿½ï¿½o responsavel pelo cadastro de usuarios, verifica as condiï¿½ï¿½es para cadastro
 {
     if (excedido == 1)
     {
@@ -162,35 +164,35 @@ void cadastrarUsuario() // função responsavel pelo cadastro de usuarios, verific
     {
         senhaAdmin[strcspn(senhaAdmin, "\n")] = '\0';
         limpar_tela();
-        if (strcmp(senhaAdmin, senhaADM) == 0) // compara senha de adm para acessar a função de cadastrar
+        if (strcmp(senhaAdmin, senhaADM) == 0) // compara senha de adm para acessar a funï¿½ï¿½o de cadastrar
         {
-            estrutura novoUsuario; // preciso de uma variavel do tipo struct igual ao ser para fazer a comparação dos dados inseridos e ver se o usuario existe ou não
+            estrutura novoUsuario; // preciso de uma variavel do tipo struct igual ao ser para fazer a comparaï¿½ï¿½o dos dados inseridos e ver se o usuario existe ou nï¿½o
 
             printf("\tDigite o nome de usuario: ");
             if (fgets(novoUsuario.nome, MAX_NOME, stdin) != NULL) // armazena nome atraves de fgets, definindo o tamanho do buffer como MAX_NOME, e o valor atraves do teclado (stdin)
             {
-                novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0'; // strcspn procura pela posição da string em que o \n se encontra e o substitui por \0
+                novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0'; // strcspn procura pela posiï¿½ï¿½o da string em que o \n se encontra e o substitui por \0
 
                 if (strlen(novoUsuario.nome) >= 4) // strlen() tamanho da variavel
                 {
                     int usuarioExiste = 0;
-                    for (int i = 0; i < idUsuario; i++) // esse looping ira percorrer a quantidade de vezes e linhas que existem usuarios atraves da leitura feita na função lerusuarios armazenada em idUsuario
+                    for (int i = 0; i < idUsuario; i++) // esse looping ira percorrer a quantidade de vezes e linhas que existem usuarios atraves da leitura feita na funï¿½ï¿½o lerusuarios armazenada em idUsuario
                     {
-                        if (strcmp(user[i].nome, novoUsuario.nome) == 0) // se linha atual == novo nome então usuario existe
+                        if (strcmp(user[i].nome, novoUsuario.nome) == 0) // se linha atual == novo nome entï¿½o usuario existe
                         {
                             usuarioExiste = 1;
                             break;
                         }
                     }
-                    if (usuarioExiste) // condição de controle para usuario existente
+                    if (usuarioExiste) // condiï¿½ï¿½o de controle para usuario existente
                     {
                         limpar_tela();
                         printf("Usuario existente\n");
                     }
-                    else // caso o usuario não existe ele ira para essa condição, no caso aqui sera feito o cadastro
+                    else // caso o usuario nï¿½o existe ele ira para essa condiï¿½ï¿½o, no caso aqui sera feito o cadastro
                     {
                         printf("\tDigite a senha: ");
-                        if (fgets(novoUsuario.senha, MAX_SENHA, stdin) != NULL) // endereça valor de senha
+                        if (fgets(novoUsuario.senha, MAX_SENHA, stdin) != NULL) // endereï¿½a valor de senha
                         {
                             novoUsuario.senha[strcspn(novoUsuario.senha, "\n")] = '\0'; // retira a quebra de linha no fim da string
                             if (strlen(novoUsuario.senha) >= 4)                         // se senha for maior ou igual a 4 caracteres
@@ -198,7 +200,7 @@ void cadastrarUsuario() // função responsavel pelo cadastro de usuarios, verific
                                 printf("Digite 1 para adm ou 2 para caixa: ");
                                 if (scanf("%d", &position) == 1)
                                 {
-                                    limpabuffer(); // Limpar buffer após scanf
+                                    limpabuffer(); // Limpar buffer apï¿½s scanf
 
                                     if (position == 1)
                                     {
@@ -211,11 +213,11 @@ void cadastrarUsuario() // função responsavel pelo cadastro de usuarios, verific
                                     else
                                     {
                                         limpar_tela();
-                                        printf("Opção inválida. Usuário não cadastrado.\n");
+                                        printf("Opï¿½ï¿½o invï¿½lida. Usuï¿½rio nï¿½o cadastrado.\n");
                                         return;
                                     }
 
-                                    user[idUsuario] = novoUsuario; // endereça os valores .nome, .senha
+                                    user[idUsuario] = novoUsuario; // endereï¿½a os valores .nome, .senha
                                     idUsuario++;
                                     FILE *escrevearquivo = fopen("idusersenha.txt", "a");
                                     if (escrevearquivo == NULL)
@@ -232,8 +234,8 @@ void cadastrarUsuario() // função responsavel pelo cadastro de usuarios, verific
                                 else
                                 {
                                     limpar_tela();
-                                    printf("Erro ao ler a opção de cargo\n");
-                                    limpabuffer(); // Limpar buffer após scanf
+                                    printf("Erro ao ler a opï¿½ï¿½o de cargo\n");
+                                    limpabuffer(); // Limpar buffer apï¿½s scanf
                                     return;
                                 }
                             }
@@ -341,7 +343,8 @@ int obterOpcao()
     }
 }
 
-int menuADM(){
+int menuADM()
+{
     int opcaoADM = 0;
     char bufferADM[9];
     while (1)
@@ -358,16 +361,20 @@ int menuADM(){
         {
             if (sscanf(bufferADM, "%d", &opcaoADM) == 1 && opcaoADM >= 1 && opcaoADM <= 3)
             {
-                switch(opcaoADM){
-                    case 1: printf("CADASTRO DE PRODUTOS\n");
+                switch (opcaoADM)
+                {
+                case 1:
+                    printf("CADASTRO DE PRODUTOS\n");
                     lerProduto();
-                    getch();
+
                     break;
-                    case 2: printf("VENDAS");
-                    getch();
+                case 2:
+                    printf("VENDAS");
+
                     break;
-                    case 3: printf("Saindo...");
-                    getch();
+                case 3:
+                    printf("Saindo...");
+
                     limpar_tela();
                     return 0;
                     break;
@@ -387,7 +394,8 @@ int menuADM(){
     }
 }
 
-int menuCAIXA(){
+int menuCAIXA()
+{
     int opcaoCAIXA = 0;
     char bufferCAIXA[9];
     while (1)
@@ -396,7 +404,7 @@ int menuCAIXA(){
         printf("Bem Vindo, %s, %s\n", user[ident].nome, user[ident].cargo);
         printf("\nMenu:\n");
         printf("1. Efetuar Venda\n");
-        printf("2. Consultar Preços\n");
+        printf("2. Consultar Preï¿½os\n");
         printf("3. Sair\n");
         printf("Escolha uma opcao: ");
 
@@ -404,16 +412,19 @@ int menuCAIXA(){
         {
             if (sscanf(bufferCAIXA, "%d", &opcaoCAIXA) == 1 && opcaoCAIXA >= 1 && opcaoCAIXA <= 3)
             {
-                switch(opcaoCAIXA){
-                    case 1: printf("Efetuar Venda");
+                switch (opcaoCAIXA)
+                {
+                case 1:
+                    printf("Efetuar Venda");
 
-                    getch();
                     break;
-                    case 2: printf("Consultar Preços");
-                    getch();
+                case 2:
+                    printf("Consultar Preï¿½os");
+
                     break;
-                    case 3: printf("Saindo...");
-                    getch();
+                case 3:
+                    printf("Saindo...");
+
                     limpar_tela();
                     return 0;
                     break;
@@ -434,7 +445,7 @@ int menuCAIXA(){
 }
 int main()
 {
-    setlocale(LC_ALL,"");
+    setlocale(LC_ALL, "");
     int opcao;
 
     lerUsuarios();
@@ -453,15 +464,18 @@ int main()
             {
                 int autenticaOpcao = 0;
                 limpar_tela();
-                if(strcmp(user[ident].cargo, adm) == 0){
+                if (strcmp(user[ident].cargo, adm) == 0)
+                {
                     autenticaOpcao = 1;
-
-                }else if(strcmp(user[ident].cargo, caixa) == 0){
+                }
+                else if (strcmp(user[ident].cargo, caixa) == 0)
+                {
                     autenticaOpcao = 2;
                 }
                 printf("Bem Vindo, %s, %s\n", user[ident].nome, user[ident].cargo);
 
-                switch(autenticaOpcao){
+                switch (autenticaOpcao)
+                {
                 case 1:
                     printf("ADMINISTRADOR");
                     menuADM();
@@ -472,7 +486,6 @@ int main()
                     menuCAIXA();
                     break;
                 }
-
             }
             else
             {
@@ -491,7 +504,7 @@ int main()
             return 0;
             break;
         default:
-            // Não deve chegar aqui devido ao controle na função obterOpcao()
+            // Nï¿½o deve chegar aqui devido ao controle na funï¿½ï¿½o obterOpcao()
             break;
         }
     } while (opcao != 3);
