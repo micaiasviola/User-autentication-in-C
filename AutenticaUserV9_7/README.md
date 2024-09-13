@@ -1,8 +1,8 @@
-<h1>Versão 9.7<h1>
+<h1>Versão 9.7</h1>
 
-<p>Foi adicionado funções como:</p>
+<p>Patch notes...</p>
 
-<label>Cadastro dos produtos</label>
-<label>Alteração nos valores dos produtos</label>
-<label>Identificação de cargos, ADM ou CAIXA</label>
-<label>Menu de produtos para consulta</label>
+<li>Cadastro dos produtos</li>
+<li>Alteração nos valores dos produtos</li>
+<li>Identificação de cargos, ADM ou CAIXA</li>
+<li>Menu de produtos para consulta</li>
