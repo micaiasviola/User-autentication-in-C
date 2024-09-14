@@ -1,0 +1,5 @@
+1|1234|1234|adm
+2|micaias|1234|adm
+3|teste|1234|caixa
+4|anabanana|1234|caixa
+5|leonardo|1234|adm

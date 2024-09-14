@@ -1,0 +1,7 @@
+1|banana|3,40
+2|maca|1,59
+3|jabuticaba|12,00
+4|amora|16,00
+5|abacate|10,50
+6|beterraba|12,40
+7|manjericao|50,00
