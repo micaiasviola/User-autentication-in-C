@@ -6,3 +6,7 @@
 <li>Alteração nos valores dos produtos</li>
 <li>Identificação de cargos, ADM ou CAIXA</li>
 <li>Menu de produtos para consulta</li>
+
+pendente:
+
+falta fazer a amarração correta dos id do relatorio de vendas
