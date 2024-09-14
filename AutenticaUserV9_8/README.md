@@ -11,8 +11,8 @@
 
 <p>Patch notes...</p>
 
-<l1>Função lançar vendas</li>
-<l1>Relatorio vendas</li>
-<l1>Banco de dados relatorio de vendas com id, preço e vendedor</li>
-<l1>Correção de bugs de redundancia</li>
-<l1>Opção de confirmação para cadastro de vendas e alteração de produtos</li>
+<li>Função lançar vendas</li>
+<li>Relatorio vendas</li>
+<li>Banco de dados relatorio de vendas com id, preço e vendedor</li>
+<li>Correção de bugs de redundancia</li>
+<li>Opção de confirmação para cadastro de vendas e alteração de produtos</li>
