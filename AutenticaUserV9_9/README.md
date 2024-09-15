@@ -12,10 +12,10 @@
 <p>Patch notes...</p>
 
 <li>Função lançar vendas</li>
+<li>Banco de dados relatorio de vendas</li>
 <li>Relatorio vendas</li>
-<li>Banco de dados relatorio de vendas com id, preço e vendedor</li>
 <li>Correção de bugs de redundancia</li>
-<li>Opção de confirmação para cadastro de vendas e alteração de produtos</li>
+<li>Opção de confirma/cancela para o cadastro de vendas e alteração de produtos</li>
 
 <h1>Versão 9.9</h1>
 
