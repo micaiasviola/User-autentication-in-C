@@ -1,20 +1,20 @@
 <h1>Versão 10</h1>
 
-<p>Patch notes</p>
+<p>Patch notes.</p>
 
 <li>Atialização da UI</li>
 <li>Remoção de produtos</li>
 
 <h1>Versão 9.9</h1>
 
-<p>Patch notes...</p>
+<p>Patch notes.</p>
 
 <li>Relatorio de vendas de cada funcionario</li>
 <li>...</li>
 
 <h1>Versão 9.8</h1>
 
-<p>Patch notes...</p>
+<p>Patch notes.</p>
 
 <li>Função lançar vendas</li>
 <li>Banco de dados relatorio de vendas</li>
@@ -24,7 +24,7 @@
 
 <h1>Versão 9.7</h1>
 
-<p>Patch notes...</p>
+<p>Patch notes.</p>
 
 <li>Cadastro dos produtos</li>
 <li>Alteração nos valores dos produtos</li>
