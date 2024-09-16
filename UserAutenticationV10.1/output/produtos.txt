@@ -1,0 +1,11 @@
+1|manga|12,00
+2|banana|16,87
+3|morango|19,90
+4|laranja|9,00
+5|pocan|30,30
+6|abacate|12,00
+7|melao|16,00
+8|pera|9,00
+9|batata|19,00
+10|batata-doce|39,99
+11|bananadoce|12,00

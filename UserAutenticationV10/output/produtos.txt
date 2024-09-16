@@ -1,3 +1,4 @@
-1|pitanga|50,90
-2|jabuticaba|20,00
-3|abacaxi|6,00
+1|manga|12,00
+2|banana|16,87
+3|morango|19,90
+4|laranja|9,00

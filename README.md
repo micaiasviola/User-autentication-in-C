@@ -1,9 +1,17 @@
+<a href=""> <p>Versão mais recente download</p></a>
+<h1>Versão 10.1</h1>
+
+<p>Patch notes.</p>
+
+<li>Agora é possivel identificar produtos tanto pelo nome quanto pelo id para lançamento de vendas</li>
+<li>Verificação de digitos para cadastro de produtos</li>
+
 <h1>Versão 10</h1>
 
 <p>Patch notes.</p>
 
 <li>Atualização da UI</li>
-<li>Remoção de produtos</li>
+<li>Opção para remoção de produtos na conta de ADM</li>
 <li>Inclusão do horario no relatorio de vendas</li>
 
 <h1>Versão 9.9</h1>
