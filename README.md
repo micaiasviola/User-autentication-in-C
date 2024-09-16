@@ -2,7 +2,7 @@
 
 <p>Patch notes.</p>
 
-<li>Atialização da UI</li>
+<li>Atualização da UI</li>
 <li>Remoção de produtos</li>
 
 <h1>Versão 9.9</h1>
