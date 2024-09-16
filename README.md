@@ -4,6 +4,7 @@
 
 <li>Atualização da UI</li>
 <li>Remoção de produtos</li>
+<li>Inclusão do horario no relatorio de vendas</li>
 
 <h1>Versão 9.9</h1>
 
