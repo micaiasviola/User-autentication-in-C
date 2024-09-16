@@ -10,7 +10,6 @@
 <p>Patch notes.</p>
 
 <li>Relatorio de vendas de cada funcionario</li>
-<li>...</li>
 
 <h1>Versão 9.8</h1>
 
