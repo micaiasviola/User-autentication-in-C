@@ -10,6 +10,8 @@
 #define MAX_NOME 30
 #define MAX_SENHA 20
 #define MAX_VENDAS 200
+#define MAX_LINHA 100
+#define MAX_PRODUTO 100
 
 int limpar_tela()
 {
@@ -97,8 +99,7 @@ void lerUsuarios() // funcao que executa a leitura do banco de dados, armazena a
     }
     fclose(leitura);
 }
-#define MAX_LINHA 100
-#define MAX_PRODUTO 100
+
 
 typedef struct
 {
@@ -120,7 +121,7 @@ void lerProduto()
 
     char linha[MAX_LINHA];
     idproduto = 0;
-    // LÃÂª a primeira linha do arquivo
+    // ler a primeira linha do arquivo
     while (fgets(linha, sizeof(linha), lerproduto) != NULL)
     {
         // Remove o caractere de nova linha, se presente
@@ -540,7 +541,7 @@ void cadastrarUsuario() // FUNCAO RESPONSAVEL PELO CADASTRO DE USUARIOS. VERIFIC
                         }
                         else
                         {
-//
+
                             return;
                         }
                     }
