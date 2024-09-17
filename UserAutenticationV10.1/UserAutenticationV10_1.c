@@ -5,7 +5,7 @@
 #include <setjmp.h>
 #include <conio.h>
 #include <time.h>
-#include <ctype.h>   // para usar isalpha, digit
+#include <ctype.h>   // para usar isalpha, digit, isspace, tolower
 #include <stdbool.h> // para usar booleano
 #define MAX_USUARIOS 30
 #define MAX_NOME 30
@@ -30,7 +30,19 @@ void entradaesaida( char *entrada, char *saida){ FUNÇÂO QUE REMOVE OS NUMEROS 
 
 }*/
 
-void remove_espacos(char *str)
+void toLowerCase(char *str)
+{
+
+    int  i = 0;
+
+    while (str[i] != '\0')
+    {
+        str[i] = tolower(str[i]);
+        i++;
+    }
+}
+
+void remove_espacos(char *str) // remover espaços de uma string
 {
     char *dest = str; // Ponteiro para o destino da string sem espaços
     while (*str)
@@ -220,7 +232,7 @@ void menuProdutos()
 
     for (int i = 0; i < idproduto; i++)
     {
-        printf("\tCOD: %i|%s|R$%.2f KG\n", produto[i].id, produto[i].nome, produto[i].preco);
+        printf("\tCOD: %i -- %s -- R$%.2f KG\n\n", produto[i].id, produto[i].nome, produto[i].preco);
     }
 }
 void substituirProdutoNoArquivo(int id, structproduto NovoP)
@@ -281,23 +293,25 @@ void cadastrarProduto()
     {
         entrada[strcspn(entrada, "\n")] = '\0';
         remove_espacos(entrada);
+        toLowerCase(entrada);
 
         if (verificastringdigito(entrada))
         {
             perror("\tNome invalido");
             getch();
+            return;
         }
         else
         {
             if (strlen(entrada) >= 3)
             {
                 strcpy(NovoP.nome, entrada);
-                // Verificar se o produto já existe
+                // Verificar se o produto ja existe
                 for (int i = 0; i < idproduto; i++)
                 {
                     if (strcmp(NovoP.nome, produto[i].nome) == 0)
                     {
-                        printf("\tO item %s já está cadastrado! Deseja alterar o valor? (s) sim (n) nao: ", produto[i].nome);
+                        printf("\tO item %s ja esta cadastrado! Deseja alterar o valor? (s) sim (n) nao: ", produto[i].nome);
                         char resposta[10];
 
                         if (fgets(resposta, sizeof(resposta), stdin))
@@ -431,7 +445,6 @@ void cadastrarProduto()
                 limpar_tela();
                 perror("Invalido");
                 getch();
-                
             }
         }
     }
@@ -548,6 +561,7 @@ void cadastrarUsuario() // FUNCAO RESPONSAVEL PELO CADASTRO DE USUARIOS. VERIFIC
             if (fgets(novoUsuario.nome, MAX_NOME, stdin) != NULL) // armazena nome atraves de fgets, definindo o tamanho do buffer como MAX_NOME, e o valor atraves do teclado (stdin)
             {
                 novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0'; // strcspn procura pela posicao da string em que o \n se encontra e o substitui por \0
+                toLowerCase(novoUsuario.nome);
                 remove_espacos(novoUsuario.nome);
                 if (strlen(novoUsuario.nome) >= 4) // strlen() tamanho da variavel
                 {
@@ -657,7 +671,6 @@ void cadastrarUsuario() // FUNCAO RESPONSAVEL PELO CADASTRO DE USUARIOS. VERIFIC
         }
         else
         {
-
             printf("Senha incorreta!\n");
             getch();
             limpar_tela();
@@ -676,6 +689,7 @@ int autentica()
     fgets(confirmaNome, MAX_NOME, stdin);
     confirmaNome[strcspn(confirmaNome, "\n")] = '\0';
     remove_espacos(confirmaNome);
+    toLowerCase(confirmaNome);
 
     printf("\tDigite a senha: ");
     fgets(confirmaSenha, MAX_SENHA, stdin);
@@ -754,12 +768,15 @@ void cadastrarVenda()
     {
         entrada[strcspn(entrada, "\n")] = '\0';
         remove_espacos(entrada);
+            toLowerCase(entrada);
+
         limpar_tela();
 
         // Verifica se a entrada pode ser convertida para ID
         id = atoi(entrada);
 
         // Tenta encontrar o produto pelo ID ou pelo nome
+
         if (id > 0 && id <= MAX_VENDAS && produto[id - 1].preco > 0)
         {
             produtoIndex = id - 1; // Encontrado pelo ID
