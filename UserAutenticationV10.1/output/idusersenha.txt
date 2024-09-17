@@ -10,3 +10,6 @@
 10|anac|1234|caixa
 11|caixa|1234|caixa
 12|micaias|1234|adm
+13|123456789|123456789|adm
+14|mica|1234|adm
+15|micaiasviola|1234|adm

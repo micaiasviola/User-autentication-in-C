@@ -9,3 +9,7 @@
 9|batata|19,00
 10|batata-doce|39,99
 11|bananadoce|12,00
+12|mandiocadaterra|12,00
+13|bananananica|18,89
+14|batatadoce|15,00
+15|rucula|8,00

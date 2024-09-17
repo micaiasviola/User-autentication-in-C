@@ -1,10 +1,14 @@
 <a href=""> <p>Versão mais recente download</p></a>
-<h1>Versão 10.1</h1>
+<h1>Versão 10.1 em desenvolvimento</h1> 
 
 <p>Patch notes.</p>
 
 <li>Agora é possivel identificar produtos tanto pelo nome quanto pelo id para lançamento de vendas</li>
 <li>Verificação de digitos para cadastro de produtos</li>
+<li>Tratamentos dos caracteres "barra de espaço" para o entendimento do codigo</li>
+<li>Implementação das informações do relatorio de vendas e menu de produtos</li>
+<li>Atualização da UI</li>
+<li>Corrigido bugs onde o usuario poderia inserir caracteres inválidos para cadastrar um produto</li>
 
 <h1>Versão 10</h1>
 
