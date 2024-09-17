@@ -4,12 +4,43 @@
 #include <locale.h>
 #include <setjmp.h>
 #include <conio.h>
-
+#include <time.h>
+#include <ctype.h>   // para usar isalpha, digit
+#include <stdbool.h> // para usar booleano
 #define MAX_USUARIOS 30
 #define MAX_NOME 30
 #define MAX_SENHA 20
 #define MAX_VENDAS 200
+/*
+void entradaesaida( char *entrada, char *saida){ FUNÇÂO QUE REMOVE OS NUMEROS DE UMA STRING
+    int i = 0;  //indice da entrada
+    int j = 0; //indice da saida
 
+    while(entrada[i] != '\0'){
+        if(isalpha((unsigned char)entrada[i])){//verifica se o caracter é alfabetico, e unsigned char apenas valores positivos
+            saida[j++] = entrada[i]; // atribui o caracter em saida
+
+        }
+        i++;
+    }
+
+    saida[j] = '\0';//terminador nulo
+
+}*/
+
+// FUNÇÃO QUE VERIFICA SE A STRING POSSUI NUMEROS
+bool verificastringdigito(const char *string)
+{
+    while (*string)
+    {
+        if (isdigit((unsigned char)*string))
+        {
+            return true;
+        }
+        string++;
+    }
+    return false;
+}
 int limpar_tela()
 {
     system(
@@ -29,8 +60,8 @@ typedef struct
 
 /***VARIAVEIS GLOBAIS****/
 int idUsuario = 0; // inicia o id sempre em 0 para comeÃÂ§ar a varredura
-int idproduto = 0;
-int ident = 0;
+int idproduto = 0; // contem o id de cada produto cadastrado
+int idSessao = 0;  // idSessaoifica o usuario que esta logado
 int excedido = 0;
 char senhaADM[] = "1234";
 char senhaAdmin[MAX_SENHA];
@@ -39,16 +70,16 @@ char adm[] = "adm";
 char caixa[] = "caixa";
 estrutura user[MAX_USUARIOS];
 
-void limpabuffer() // funÃÂ§ÃÂ£o para limpar o buffer apos um endereÃÂ§o de memoria ser escrito, chamo apÃÂ³s os fgets
+void limpabuffer() // funcao para limpar o buffer apos um endereco de memoria ser escrito, chamo apÃÂ³s os fgets
 {
     int c;
     while ((c = getchar()) != '\n' && c != EOF)
     {
-        // corpo vazio para limpar o endereÃÂ§o de memoria
+        // corpo vazio para limpar o endereco de memoria
     }
 }
 
-void lerUsuarios() // funÃÂ§ÃÂ£o que executa a leitura do banco de dados, armazena a quantidade de cadastros em idUsuario
+void lerUsuarios() // funcao que executa a leitura do banco de dados, armazena a quantidade de cadastros em idUsuario
 {
     FILE *leitura = fopen("idusersenha.txt", "r");
     if (leitura == NULL)
@@ -61,19 +92,19 @@ void lerUsuarios() // funÃÂ§ÃÂ£o que executa a leitura do banco de dad
     while (fgets(user[idUsuario].nome, MAX_NOME, leitura) != NULL)
     {
         user[idUsuario].nome[strcspn(user[idUsuario].nome, "\n")] = '\0';
-        char *split = strtok(user[idUsuario].nome, "|"); // primeiro token a ser pego da tabela ÃÂ© o id, portanto split esta valendo o id no momento
+        char *split = strtok(user[idUsuario].nome, "|"); // primeiro token a ser pego da tabela apos o id, portanto split esta valendo o id no momento
 
         user[idUsuario].id = atoi(split); // funcao atoi() transforma numeros strings em numeros inteiros
                                           // printf("%s\n", user[idUsuario].id);
         if (split != NULL)
         {
 
-            split = strtok(NULL, "|"); // agora split recebe o nome, pois foi chamado a funÃÂ§ÃÂ£o null dele, entÃÂ£o ele entende como 1token ÃÂ© nulo e apos a divisÃÂ£o ele ira armazenar o 2token que no caso ÃÂ© o nome
+            split = strtok(NULL, "|"); // agora split recebe o nome, pois foi chamado a funcao null dele, entÃÂ£o ele entende como 1token apos nulo e apos a divisao ele ira armazenar o 2token que no caso apos o nome
             strcpy(user[idUsuario].nome, split);
             // printf("%s\n", user[idUsuario].nome);
             if (split != NULL)
             {
-                split = strtok(NULL, "|"); // aqui o split ira ignorar o token atual (2) e ler a partir da proxima divisÃÂ£o, que no caso sera o 3token == senha
+                split = strtok(NULL, "|"); // aqui o split ira ignorar o token atual (2) e ler a partir da proxima divisao, que no caso sera o 3token == senha
                 strncpy(user[idUsuario].senha, split, MAX_SENHA - 1);
                 // printf("%s\n", user[idUsuario].senha);
                 user[idUsuario].senha[MAX_SENHA - 1] = '\0'; // define o ultimo caractere de .senha como nulo
@@ -216,145 +247,153 @@ void substituirProdutoNoArquivo(int id, structproduto NovoP)
 
 void cadastrarProduto()
 {
-
-    printf("\tInsira o nome do produto que deseja cadastrar: ");
+    char entrada[MAX_NOME];
     menuProdutos();
     structproduto NovoP;
-
-    if (fgets(NovoP.nome, sizeof(NovoP.nome), stdin) != NULL)
+    printf("\tInsira o nome do produto que deseja cadastrar: ");
+    if (fgets(entrada, sizeof(entrada), stdin) != NULL)
     {
-        NovoP.nome[strcspn(NovoP.nome, "\n")] = '\0';
+        entrada[strcspn(entrada, "\n")] = '\0';
 
-        // Verificar se o produto já existe
-        for (int i = 0; i < idproduto; i++)
+        if (verificastringdigito(entrada))
         {
-            if (strcmp(NovoP.nome, produto[i].nome) == 0)
+            perror("Nome invalido");
+            getch();
+        }
+        else
+        {
+            strcpy(NovoP.nome, entrada);
+            // Verificar se o produto já existe
+            for (int i = 0; i < idproduto; i++)
             {
-                printf("\tO item %s já está cadastrado! Deseja alterar o valor? (s) sim (n) nao: ", produto[i].nome);
-                char resposta[10];
-
-                if (fgets(resposta, sizeof(resposta), stdin))
+                if (strcmp(NovoP.nome, produto[i].nome) == 0)
                 {
-                    resposta[strcspn(resposta, "\n")] = '\0';
+                    printf("\tO item %s já está cadastrado! Deseja alterar o valor? (s) sim (n) nao: ", produto[i].nome);
+                    char resposta[10];
 
-                    if (strcmp(resposta, "s") == 0 || strcmp(resposta, "S") == 0)
+                    if (fgets(resposta, sizeof(resposta), stdin))
                     {
-                        char novopreco[15]; // Buffer maior para o preco
-                        float novoprecofloat;
-                        printf("\tInsira o novo preco por kg: ");
+                        resposta[strcspn(resposta, "\n")] = '\0';
 
-                        if (fgets(novopreco, sizeof(novopreco), stdin) != NULL)
+                        if (strcmp(resposta, "s") == 0 || strcmp(resposta, "S") == 0)
                         {
-                            novopreco[strcspn(novopreco, "\n")] = '\0';
-                            novoprecofloat = strtof(novopreco, NULL);
+                            char novopreco[15]; // Buffer maior para o preco
+                            float novoprecofloat;
+                            printf("\tInsira o novo preco por kg: ");
 
-                            produto[i].preco = novoprecofloat;
-                            if (produto[i].preco > 0)
+                            if (fgets(novopreco, sizeof(novopreco), stdin) != NULL)
                             {
-                                printf("\n\tResumo do produto a ser cadastrado:\n");
-                                printf("\tNome: %s\n", produto[i].nome);
-                                printf("\tpreco por kg: R$%.2f\n", produto[i].preco);
-                                printf("\t1 - Confirma\n\t2 - Cancela\n\tEscolha: ");
+                                novopreco[strcspn(novopreco, "\n")] = '\0';
+                                novoprecofloat = strtof(novopreco, NULL);
 
-                                char opcao1[10];
-                                if (fgets(opcao1, sizeof(opcao1), stdin) != NULL)
+                                produto[i].preco = novoprecofloat;
+                                if (produto[i].preco > 0)
                                 {
-                                    int escolha = atoi(opcao1);
+                                    printf("\n\tResumo do produto a ser cadastrado:\n");
+                                    printf("\tNome: %s\n", produto[i].nome);
+                                    printf("\tpreco por kg: R$%.2f\n", produto[i].preco);
+                                    printf("\t1 - Confirma\n\t2 - Cancela\n\tEscolha: ");
 
-                                    switch (escolha)
+                                    char opcao1[10];
+                                    if (fgets(opcao1, sizeof(opcao1), stdin) != NULL)
                                     {
-                                    case 1:
-                                        substituirProdutoNoArquivo(produto[i].id, produto[i]); // Substituir no arquivo passando id e produto como parametro
-                                        getch();
-                                        break;
-                                    case 2: // Cancelar
-                                        limpar_tela();
-                                        printf("\tAlteracao do produto cancelada.\n");
-                                        break;
+                                        int escolha = atoi(opcao1);
 
-                                    default:
-                                        printf("Opção inválida. Cadastro não realizado.\n");
-                                        break;
+                                        switch (escolha)
+                                        {
+                                        case 1:
+                                            substituirProdutoNoArquivo(produto[i].id, produto[i]); // Substituir no arquivo passando id e produto como parametro
+                                            getch();
+                                            break;
+                                        case 2: // Cancelar
+                                            limpar_tela();
+                                            printf("\tAlteracao do produto cancelada.\n");
+                                            break;
+
+                                        default:
+                                            printf("Opção inválida. Cadastro não realizado.\n");
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        perror("Invalid");
+                                        return;
                                     }
                                 }
-                                else
-                                {
-                                    perror("Invalid");
-                                    return;
-                                }
+                            }
+                            else
+                            {
+                                printf("Usuário escolheu não. Cancelando a alteracao...\n");
                             }
                         }
                         else
                         {
-                            printf("Usuário escolheu não. Cancelando a alteracao...\n");
+                            printf("Erro ao ler a entrada.\n");
+                        }
+                        return; // Parar a função após alterar o produto
+                    }
+                }
+            }
+            // Se o produto não existe, solicitar preco e confirmar o cadastro
+            printf("\n\tInsira o preco por kg: ");
+            char novopreco[15];
+            if (fgets(novopreco, sizeof(novopreco), stdin) != NULL)
+            {
+                NovoP.preco = (float)atof(novopreco);
+                if (NovoP.preco > 0)
+                {
+                    NovoP.id = idproduto + 1; // Atribuir ID
+
+                    // Mostrar informações para confirmação
+                    printf("\n\tResumo do produto a ser cadastrado:\n");
+                    printf("\tNome: %s\n", NovoP.nome);
+                    printf("\tpreco por kg: R$%.2f\n", NovoP.preco);
+                    printf("\t1 - Confirma\n\t2 - Cancela\n\tEscolha: ");
+
+                    char opcao[10];
+                    if (fgets(opcao, sizeof(opcao), stdin) != NULL)
+                    {
+                        int escolha = atoi(opcao);
+
+                        switch (escolha)
+                        {
+                        case 1: // Confirmar
+                            produto[idproduto] = NovoP;
+                            idproduto++;
+
+                            // Escrever no arquivo
+                            FILE *escreveProduto = fopen("produtos.txt", "a");
+                            if (escreveProduto != NULL)
+                            {
+                                fprintf(escreveProduto, "%i|%s|%.2f\n", NovoP.id, NovoP.nome, NovoP.preco);
+                                fclose(escreveProduto);
+                                printf("\n\tProduto cadastrado com sucesso\n");
+                            }
+                            else
+                            {
+                                printf("Erro ao abrir o arquivo de produtos!\n");
+                            }
+                            break;
+
+                        case 2: // Cancelar
+                            printf("Cadastro do produto cancelado.\n");
+                            break;
+
+                        default:
+                            printf("Opção inválida. Cadastro não realizado.\n");
+                            break;
                         }
                     }
                     else
                     {
-                        printf("Erro ao ler a entrada.\n");
-                    }
-                    return; // Parar a função após alterar o produto
-                }
-            }
-        }
-        // Se o produto não existe, solicitar preco e confirmar o cadastro
-        printf("\n\tInsira o preco por kg: ");
-        char novopreco[15];
-        if (fgets(novopreco, sizeof(novopreco), stdin) != NULL)
-        {
-            NovoP.preco = (float)atof(novopreco);
-            if (NovoP.preco > 0)
-            {
-                NovoP.id = idproduto + 1; // Atribuir ID
-
-                // Mostrar informações para confirmação
-                printf("\n\tResumo do produto a ser cadastrado:\n");
-                printf("\tNome: %s\n", NovoP.nome);
-                printf("\tpreco por kg: R$%.2f\n", NovoP.preco);
-                printf("\t1 - Confirma\n\t2 - Cancela\n\tEscolha: ");
-
-                char opcao[10];
-                if (fgets(opcao, sizeof(opcao), stdin) != NULL)
-                {
-                    int escolha = atoi(opcao);
-
-                    switch (escolha)
-                    {
-                    case 1: // Confirmar
-                        produto[idproduto] = NovoP;
-                        idproduto++;
-
-                        // Escrever no arquivo
-                        FILE *escreveProduto = fopen("produtos.txt", "a");
-                        if (escreveProduto != NULL)
-                        {
-                            fprintf(escreveProduto, "%i|%s|%.2f\n", NovoP.id, NovoP.nome, NovoP.preco);
-                            fclose(escreveProduto);
-                            printf("\n\tProduto cadastrado com sucesso\n");
-                        }
-                        else
-                        {
-                            printf("Erro ao abrir o arquivo de produtos!\n");
-                        }
-                        break;
-
-                    case 2: // Cancelar
-                        printf("Cadastro do produto cancelado.\n");
-                        break;
-
-                    default:
-                        printf("Opção inválida. Cadastro não realizado.\n");
-                        break;
+                        printf("Erro ao ler a escolha. Cadastro não realizado.\n");
                     }
                 }
                 else
                 {
-                    printf("Erro ao ler a escolha. Cadastro não realizado.\n");
+                    printf("preco inválido...\n");
                 }
-            }
-            else
-            {
-                printf("preco inválido...\n");
             }
         }
     }
@@ -363,6 +402,89 @@ void cadastrarProduto()
     {
         limpar_tela();
         printf("Erro ao ler a entrada. Tente novamente.\n");
+    }
+}
+
+void excluirProduto()
+{
+
+    int idProduto;
+    printf("\tDigite o ID do produto que deseja excluir: ");
+
+    char idStr[MAX_NOME];
+    if (fgets(idStr, sizeof(idStr), stdin) != NULL)
+    {
+        idStr[strcspn(idStr, "\n")] = '\0';
+
+        idProduto = atoi(idStr); // Converter a string para número
+
+        int encontrado = -1;
+        for (int i = 0; i < idproduto; i++)
+        {
+            if (produto[i].id == idProduto || strcmp(produto[i].nome, idStr) == 0) // entende tando o ID como o Nome do produto
+            {
+                if (strcmp(produto[i].nome, idStr) == 0)
+                {
+                    encontrado = i;
+                    break; // sai do laco ao ser encontrado
+                }
+                encontrado = i;
+                break;
+            }
+        }
+
+        if (encontrado != -1) // se produto for encontrado...
+        {
+            printf("\tProduto %s encontrado. Deseja realmente excluir? (s/n): ", produto[encontrado].nome);
+            char resposta[5];
+            if (fgets(resposta, sizeof(resposta), stdin))
+            {
+                resposta[strcspn(resposta, "\n")] = '\0';
+
+                if (strcmp(resposta, "s") == 0 || strcmp(resposta, "S") == 0)
+                {
+                    // Remover o produto do array
+                    for (int i = encontrado; i < idproduto - 1; i++) // le ate a penultima linha
+                    {
+                        produto[i] = produto[i + 1]; // atribui o proximo produto ao produto anterior sucessivamente, a partir do produto que foi encontrado, sobreescrevendo ele
+                    }
+                    idproduto--; // Decrementa o total de produtos
+
+                    // Reescrever o arquivo de produtos com IDs atualizados
+                    FILE *arquivo = fopen("produtos.txt", "w");
+                    if (arquivo != NULL)
+                    {
+                        for (int i = 0; i < idproduto; i++)
+                        {
+                            produto[i].id = i + 1; // Atualizar ID de cada produto
+                            fprintf(arquivo, "%i|%s|%.2f\n", produto[i].id, produto[i].nome, produto[i].preco);
+                        }
+                        fclose(arquivo);
+                        printf("\n\tProduto excluído e IDs atualizados com sucesso!\n");
+                    }
+                    else
+                    {
+                        printf("Erro ao abrir o arquivo de produtos.\n");
+                    }
+                }
+                else
+                {
+                    printf("\tOperação de exclusão cancelada.\n");
+                }
+            }
+            else
+            {
+                printf("\tErro ao ler a resposta. Tente novamente.\n");
+            }
+        }
+        else
+        {
+            printf("\tProduto com ID %d não encontrado!\n", idProduto);
+        }
+    }
+    else
+    {
+        printf("Erro ao ler a entrada.\n");
     }
 }
 
@@ -379,35 +501,35 @@ void cadastrarUsuario() // FUNCAO RESPONSAVEL PELO CADASTRO DE USUARIOS. VERIFIC
     {
         senhaAdmin[strcspn(senhaAdmin, "\n")] = '\0';
         limpar_tela();
-        if (strcmp(senhaAdmin, senhaADM) == 0) // compara senha de adm para acessar a funÃÂ§ÃÂ£o de cadastrar
+        if (strcmp(senhaAdmin, senhaADM) == 0) // compara senha de adm para acessar a funcao de cadastrar
         {
-            estrutura novoUsuario; // preciso de uma variavel do tipo struct igual ao ser para fazer a comparaÃÂ§ÃÂ£o dos dados inseridos e ver se o usuario existe ou nÃ£o
+            estrutura novoUsuario; // preciso de uma variavel do tipo struct igual ao ser para fazer a compacao dos dados inseridos e ver se o usuario existe ou nao
 
             printf("\tDigite o nome de usuario: ");
             if (fgets(novoUsuario.nome, MAX_NOME, stdin) != NULL) // armazena nome atraves de fgets, definindo o tamanho do buffer como MAX_NOME, e o valor atraves do teclado (stdin)
             {
-                novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0'; // strcspn procura pela posiÃÂ§ÃÂ£o da string em que o \n se encontra e o substitui por \0
+                novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0'; // strcspn procura pela posicao da string em que o \n se encontra e o substitui por \0
 
                 if (strlen(novoUsuario.nome) >= 4) // strlen() tamanho da variavel
                 {
                     int usuarioExiste = 0;
-                    for (int i = 0; i < idUsuario; i++) // esse looping ira percorrer a quantidade de vezes e linhas que existem usuarios atraves da leitura feita na funÃÂ§ÃÂ£o lerusuarios armazenada em idUsuario
+                    for (int i = 0; i < idUsuario; i++) // esse looping ira percorrer a quantidade de vezes e linhas que existem usuarios atraves da leitura feita na funcao lerusuarios armazenada em idUsuario
                     {
-                        if (strcmp(user[i].nome, novoUsuario.nome) == 0) // se linha atual == novo nome entÃÂ£o usuario existe
+                        if (strcmp(user[i].nome, novoUsuario.nome) == 0) // se linha atual == novo nome usuario existe
                         {
                             usuarioExiste = 1;
                             break;
                         }
                     }
-                    if (usuarioExiste) // condiÃÂ§ÃÂ£o de controle para usuario existente
+                    if (usuarioExiste) // controle para usuario existente
                     {
                         limpar_tela();
                         printf("Usuario existente\n");
                     }
-                    else // caso o usuario nÃ£o existe ele ira para essa condiÃÂ§ÃÂ£o, no caso aqui sera feito o cadastro
+                    else // caso o usuario nao exista sera feito o cadastro
                     {
                         printf("\tDigite a senha: ");
-                        if (fgets(novoUsuario.senha, MAX_SENHA, stdin) != NULL) // endereÃÂ§a valor de senha
+                        if (fgets(novoUsuario.senha, MAX_SENHA, stdin) != NULL) //  valor de senha
                         {
                             novoUsuario.senha[strcspn(novoUsuario.senha, "\n")] = '\0'; // retira a quebra de linha no fim da string
                             if (strlen(novoUsuario.senha) >= 4)                         // se senha for maior ou igual a 4 caracteres
@@ -415,11 +537,11 @@ void cadastrarUsuario() // FUNCAO RESPONSAVEL PELO CADASTRO DE USUARIOS. VERIFIC
                                 printf("Digite 1 para adm ou 2 para caixa: ");
                                 if (scanf("%d", &position) == 1)
                                 {
-                                    limpabuffer(); // Limpar buffer apÃÂ³s scanf
+                                    limpabuffer(); // Limpar buffer scanf
 
                                     if (position == 1)
                                     {
-                                        strcpy(novoUsuario.cargo, adm);
+                                        strcpy(novoUsuario.cargo, adm); // atribui o cargo no array novo usuario
                                     }
                                     else if (position == 2)
                                     {
@@ -428,11 +550,11 @@ void cadastrarUsuario() // FUNCAO RESPONSAVEL PELO CADASTRO DE USUARIOS. VERIFIC
                                     else
                                     {
                                         limpar_tela();
-                                        printf("OpÃÂ§ÃÂ£o invÃ¡lida. UsuÃ¡rio nÃ£o cadastrado.\n");
+                                        printf("Opcao invalida. Usuario nao cadastrado.\n");
                                         return;
                                     }
 
-                                    user[idUsuario] = novoUsuario; // endereÃÂ§a os valores .nome, .senha
+                                    user[idUsuario] = novoUsuario; // atribui os novos valores no array user
                                     idUsuario++;
                                     FILE *escrevearquivo = fopen("idusersenha.txt", "a");
                                     if (escrevearquivo == NULL)
@@ -449,8 +571,8 @@ void cadastrarUsuario() // FUNCAO RESPONSAVEL PELO CADASTRO DE USUARIOS. VERIFIC
                                 else
                                 {
                                     limpar_tela();
-                                    printf("Erro ao ler a opÃÂ§ÃÂ£o de cargo\n");
-                                    limpabuffer(); // Limpar buffer apÃÂ³s scanf
+                                    printf("Opcao invalida\n");
+                                    limpabuffer();
                                     return;
                                 }
                             }
@@ -508,12 +630,12 @@ int autentica()
     int i = 0;
     while (i < idUsuario)
     {
-        if (strcmp(confirmaNome, user[i].nome) == 0)
+        if (strcmp(confirmaNome, user[i].nome) == 0) // compara nome com usuario
         {
             if (strcmp(confirmaSenha, user[i].senha) == 0)
             {
                 limpar_tela();
-                ident = i;
+                idSessao = i; // ID do usuario que esta logado
                 return 1;
             }
         }
@@ -540,7 +662,7 @@ int obterOpcao()
 
         if (fgets(buffer, sizeof(buffer), stdin))
         {
-            if (sscanf(buffer, "%d", &opcao) == 1 && opcao >= 1 && opcao <= 4)
+            if (sscanf(buffer, "%d", &opcao) == 1 && opcao >= 1 && opcao <= 4) // filtra a escolha do menu
             {
                 return opcao;
             }
@@ -563,45 +685,72 @@ typedef struct
     int id;
     char nome[100];
     float preco;
+    char horariovenda[20];
 } structvendas;
+
 structvendas vendas[999];
-int idvenda = 0;
+
+int idvenda = 0; // Id de cada venda registrada
 void cadastrarVenda()
 {
     float precokg, valorkg, x;
-    char produtoid[MAX_PRODUTO];
+    char entrada[MAX_PRODUTO];
     char pesokg[10];
     char opcao[10];
-    int id;
-
+    char nomeproduto[MAX_NOME];
+    int id = -1;           // Inicialmente, nenhum ID
+    int produtoIndex = -1; // Índice do produto, se encontrado
     structvendas novavenda;
+
     limpar_tela();
     menuProdutos();
 
-    printf("\n\n\tInforme o id do produto que deseja vender: \n");
-    if (fgets(produtoid, sizeof(produtoid), stdin) != NULL)
+    printf("\n\n\tInforme o id ou nome do produto que deseja vender: ");
+    if (fgets(entrada, sizeof(entrada), stdin) != NULL)
     {
+        entrada[strcspn(entrada, "\n")] = '\0';
         limpar_tela();
-        id = atoi(produtoid);
 
-        // Verifica se o ID é válido
-        if (id > 0 && id <= MAX_VENDAS)
+        // Verifica se a entrada pode ser convertida para ID
+        id = atoi(entrada);
+
+        // Tenta encontrar o produto pelo ID ou pelo nome
+        if (id > 0 && id <= MAX_VENDAS && produto[id - 1].preco > 0)
         {
-            precokg = produto[id - 1].preco;
-            if (precokg > 0)
+            produtoIndex = id - 1; // Encontrado pelo ID
+        }
+        else
+        {
+            // Se não encontrou pelo ID, procura pelo nome
+            for (int i = 0; i < MAX_VENDAS; i++)
             {
-                printf("\t\nInsira o peso em KILOGRAMAS, EX: 3,25\n\tKG: ");
-                if (fgets(pesokg, sizeof(pesokg), stdin) != NULL)
+                if (strcmp(produto[i].nome, entrada) == 0 && produto[i].preco > 0)
                 {
-                    pesokg[strcspn(pesokg, "\n")] = '\0';
-                    valorkg = strtof(pesokg, NULL);
+                    produtoIndex = i;
+                    break;
+                }
+            }
+        }
 
-                    x = valorkg * precokg;
+        // Verifica se o produto foi encontrado
+        if (produtoIndex >= 0)
+        {
+            strcpy(nomeproduto, produto[produtoIndex].nome);
+            precokg = produto[produtoIndex].preco;
 
-                    printf("\tValor a pagar: R$%.2f\n", x);
+            printf("\n\t%s R$%.2f/KG.\n\t\n\tInsira a quantidade de KGs: ", nomeproduto, precokg);
+            if (fgets(pesokg, sizeof(pesokg), stdin) != NULL)
+            {
+                pesokg[strcspn(pesokg, "\n")] = '\0';
+                valorkg = strtof(pesokg, NULL);
+
+                x = valorkg * precokg;
+                if (x > 0)
+                {
+                    printf("\n\tValor a pagar: R$%.2f\n", x);
                     printf("\t1 - Confirma\n\t2 - Cancela\n\tEscolha: ");
 
-                    // Lê a escolha do usuário
+                    // le a escolha do usuário
                     if (fgets(opcao, sizeof(opcao), stdin) != NULL)
                     {
                         int escolha = atoi(opcao);
@@ -613,40 +762,57 @@ void cadastrarVenda()
                             FILE *relatorioVendas = fopen("relatorioVendas.txt", "r");
                             if (relatorioVendas != NULL)
                             {
-                                idvenda = 0;
+                                int idvenda = 0;
                                 char buffer[MAX_PRODUTO];
                                 while (fgets(buffer, sizeof(buffer), relatorioVendas) != NULL)
                                 {
                                     idvenda++;
                                 }
                                 fclose(relatorioVendas);
-                            }
 
-                            // Atualiza a nova venda
-                            novavenda.id = idvenda;
-                            strcpy(novavenda.nome, user[ident].nome); // Certifique-se de que user e ident estão definidos
-                            novavenda.preco = x;
+                                // Recebe o horario atual para a venda
+                                time_t agora;
+                                time(&agora);
 
-                            // Armazena a venda no array
-                            vendas[idvenda] = novavenda;
+                                struct tm *local = localtime(&agora);
 
-                            // Adiciona a nova venda ao arquivo
-                            relatorioVendas = fopen("relatorioVendas.txt", "a");
-                            if (relatorioVendas != NULL)
-                            {
-                                fprintf(relatorioVendas, "%i|%.2f|%s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].nome);
-                                fclose(relatorioVendas);
+                                char hora[80];
+                                strftime(hora, sizeof(hora), "%Y-%m-%d %H:%M:%S", local);
+
+                                strcpy(novavenda.horariovenda, hora);
+
+                                // Atualiza a nova venda no array de nova venda
+                                novavenda.id = idvenda;
+                                strcpy(novavenda.nome, user[idSessao].nome);
+                                novavenda.preco = x;
+
+                                // Armazena a venda no array de vendas
+                                vendas[idvenda] = novavenda;
+
+                                // Adiciona a nova venda ao arquivo
+                                relatorioVendas = fopen("relatorioVendas.txt", "a");
+                                if (relatorioVendas != NULL)
+                                {
+                                    fprintf(relatorioVendas, "%i|%.2f|%s|%s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].nome, vendas[idvenda].horariovenda);
+                                    fclose(relatorioVendas);
+                                }
+                                else
+                                {
+                                    perror("ERRO AO ABRIR ARQUIVO");
+                                    return;
+                                }
+
+                                // Imprime a venda adicionada
+                                limpar_tela();
+                                printf("\nVenda confirmada: ");
+                                printf("ID %i - R$%.2f - %s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].nome);
+                                getch();
                             }
                             else
                             {
                                 perror("ERRO AO ABRIR ARQUIVO");
                                 return;
                             }
-
-                            // Imprime a venda recém-adicionada
-                            limpar_tela();
-                            printf("\nVenda confirmada:\n");
-                            printf("%i|%.2f|%s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].nome);
                             break;
                         }
 
@@ -661,37 +827,27 @@ void cadastrarVenda()
                     }
                     else
                     {
-                        printf("ERRO DE LEITURA");
+                        printf("ERRO DE LEITURA\n");
                     }
-
-                    // Pausa para o usuário
                 }
                 else
                 {
-                    printf("ERRO DE LEITURA");
-
-                    return;
+                    perror("Invalido");
                 }
             }
             else
             {
-                printf("Produto inexistente!");
-                getchar(); // Substitua por getch() se estiver disponível
-                return;
+                printf("ERRO DE LEITURA\n");
             }
         }
         else
         {
-            printf("ID do produto inválido!");
-            getchar(); // Substitua por getch() se estiver disponível
-            return;
+            printf("Produto inexistente ou inválido!\n");
         }
     }
     else
     {
-        printf("ERRO DE LEITURA");
-        getchar(); // Substitua por getch() se estiver disponível
-        return;
+        printf("ERRO DE LEITURA\n");
     }
 }
 void relatorioVendasCaixa()
@@ -705,15 +861,16 @@ void relatorioVendasCaixa()
 
     int i = 0;
     char buffer[MAX_PRODUTO];
+    printf("\n\t     CODIGO - VALOR - VENDEDOR - HORARIO\n");
     while (fgets(buffer, sizeof(buffer), relatorioVendas) != NULL)
     {
-        sscanf(buffer, "%d|%f|%99[^\n]", &vendas[i].id, &vendas[i].preco, vendas[i].nome);
+        sscanf(buffer, "%d|%f|%99[^|]|%19[^\n]", &vendas[i].id, &vendas[i].preco, vendas[i].nome, vendas[i].horariovenda);
 
         // Filtra apenas as vendas do caixa logado
-        if (strcmp(vendas[i].nome, user[ident].nome) == 0)
+        if (strcmp(vendas[i].nome, user[idSessao].nome) == 0)
         {
 
-            printf("\n\t%i - %.2f - %s\n", vendas[i].id, vendas[i].preco, vendas[i].nome);
+            printf("\n\t    ID %i - R$%.2f - %s - %s\n", vendas[i].id, vendas[i].preco, vendas[i].nome, vendas[i].horariovenda);
         }
         i++;
     }
@@ -721,28 +878,29 @@ void relatorioVendasCaixa()
 }
 void relatorioVendas()
 {
+    limpar_tela();
     FILE *relatorioVendas = fopen("relatorioVendas.txt", "r");
     if (relatorioVendas == NULL)
     {
         perror("ARQUIVO VAZIO");
         return;
     }
-
+    // endereca as vendas toda vez que e chamado
     int i = 0;
     char buffer[MAX_PRODUTO];
     while (fgets(buffer, sizeof(buffer), relatorioVendas) != NULL)
     {
-        sscanf(buffer, "%d|%f|%99[^\n]", &vendas[i].id, &vendas[i].preco, vendas[i].nome);
+        sscanf(buffer, "%d|%f|%99[^|]|%19[^\n]", &vendas[i].id, &vendas[i].preco, vendas[i].nome, vendas[i].horariovenda);
         i++;
     }
     // limpabuffer();
     //  printf("%i|%.2f|%s\n", vendas[5].id, vendas[5].preco, vendas[5].nome);
     fclose(relatorioVendas);
-
+    printf("\tCODIGO - VALOR - VENDEDOR - HORARIO\n");
     // Exibindo o relatório das vendas
     for (int j = 0; j < i; j++)
     {
-        printf("%i - %.2f - %s\n", vendas[j].id, vendas[j].preco, vendas[j].nome);
+        printf("\n\t    ID %i - R$%.2f - %s - %s\n", vendas[j].id, vendas[j].preco, vendas[j].nome, vendas[j].horariovenda);
     }
 }
 int menuADM()
@@ -753,23 +911,25 @@ int menuADM()
     while (1)
     {
         limpar_tela();
-        printf("Bem Vindo, %s, %s\n", user[ident].nome, user[ident].cargo);
+        printf("Bem Vindo, %s, %s\n", user[idSessao].nome, user[idSessao].cargo);
         printf("\nMenu:\n");
         printf("1. Cadastrar/Alterar Produtos\n");
         printf("2. Efetuar Venda\n");
         printf("3. Relatorio de Vendas\n");
         printf("4. Sair\n");
+        printf("5. Remover Produto\n");
+        printf("6. Menu de Produtos\n");
         printf("Escolha uma opcao: ");
 
         if (fgets(bufferADM, sizeof(bufferADM), stdin))
         {
-            if (sscanf(bufferADM, "%d", &opcaoADM) == 1 && opcaoADM >= 1 && opcaoADM <= 4)
+            if (sscanf(bufferADM, "%d", &opcaoADM) == 1 && opcaoADM >= 1 && opcaoADM <= 6)
             {
                 switch (opcaoADM)
                 {
                 case 1:
                     limpar_tela();
-                    printf("CADASTRAR/ALTERAR PRODUTOS\n");
+
                     cadastrarProduto();
 
                     break;
@@ -787,6 +947,14 @@ int menuADM()
                     getch();
                     limpar_tela();
                     return 0;
+                    break;
+                case 5:
+                    menuProdutos();
+                    excluirProduto();
+                    break;
+                case 6:
+                    menuProdutos();
+                    getch();
                     break;
                 }
             }
@@ -811,7 +979,7 @@ int menuCAIXA()
     while (1)
     {
         limpar_tela();
-        printf("Bem Vindo, %s, %s\n", user[ident].nome, user[ident].cargo);
+        printf("Bem Vindo, %s, %s\n", user[idSessao].nome, user[idSessao].cargo);
         printf("\nMenu:\n");
         printf("1. Efetuar Venda\n");
         printf("2. Consultar Precos\n");
@@ -836,7 +1004,7 @@ int menuCAIXA()
                     getch();
                     break;
                 case 3:
-                    printf("\n\tRELATORIO DE VENDAS\n");
+                    printf("\n\t     RELATORIO DE VENDAS\n");
                     relatorioVendasCaixa();
                     getch();
                     break;
@@ -884,15 +1052,15 @@ int main()
             {
                 int autenticaOpcao = 0;
                 limpar_tela();
-                if (strcmp(user[ident].cargo, adm) == 0)
+                if (strcmp(user[idSessao].cargo, adm) == 0)
                 {
                     autenticaOpcao = 1;
                 }
-                else if (strcmp(user[ident].cargo, caixa) == 0)
+                else if (strcmp(user[idSessao].cargo, caixa) == 0)
                 {
                     autenticaOpcao = 2;
                 }
-                printf("Bem Vindo, %s, %s\n", user[ident].nome, user[ident].cargo);
+                printf("Bem Vindo, %s, %s\n", user[idSessao].nome, user[idSessao].cargo);
 
                 switch (autenticaOpcao)
                 {
@@ -923,7 +1091,7 @@ int main()
             return 0;
             break;
         default:
-            // nÃ£o deve chegar aqui devido ao controle na funÃÂ§ÃÂ£o obterOpcao()
+            // nao deve chegar aqui devido ao controle na funcao obterOpcao()
             break;
         }
     } while (opcao != 3);
