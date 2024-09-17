@@ -3,43 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patch Notes</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #333;
-        }
-        ul {
-            list-style-type: disc;
-            margin-left: 20px;
-        }
-        li {
-            margin-bottom: 10px;
-        }
-        .version-header {
-            margin-top: 40px;
-        }
-        a {
-            text-decoration: none;
-            color: #3498db;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .download-link {
-            margin-bottom: 20px;
-            display: block;
-        }
-        p.version {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-    </style>
+    <link rel="stylesheet" href="./style.css">
+   
 </head>
 <body>
 
