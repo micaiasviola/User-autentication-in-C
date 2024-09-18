@@ -2,7 +2,11 @@
 
 [**Baixar versão mais recente**](https://github.com/micaiasviola/User-autentication-in-C/archive/refs/heads/main.zip)
 
-## Versão 10.1 - Em Desenvolvimento
+## Versão 10.2 em desenvolvimento
+
+- Inclusão da forma de pagamento/troco no relatorio das vendas
+
+## Versão 10.1
 
 - Agora é possível identificar produtos tanto pelo nome quanto pelo ID para lançamento de vendas.
 - Verificação de dígitos para cadastro de produtos.

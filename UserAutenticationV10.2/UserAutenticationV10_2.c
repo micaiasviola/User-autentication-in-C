@@ -30,10 +30,23 @@ void entradaesaida( char *entrada, char *saida){ FUNÇÂO QUE REMOVE OS NUMEROS 
 
 }*/
 
+int contemLetras(const char *str)
+{
+    while (*str)
+    {
+        if (isalpha((unsigned char)*str))
+        {
+            return 1; // Retorna 1 se encontrar uma letra
+        }
+        str++;
+    }
+    return 0; // Retorna 0 se não encontrar nenhuma letra
+}
+
 void toLowerCase(char *str)
 {
 
-    int  i = 0;
+    int i = 0;
 
     while (str[i] != '\0')
     {
@@ -93,6 +106,7 @@ typedef struct
     char produto[30];
     float preco;
     char horariovenda[20];
+    char pagamento[20];
 } structvendas;
 
 structvendas vendas[999];
@@ -112,9 +126,10 @@ int idproduto = 0; // contem o id de cada produto cadastrado
 int idSessao = 0;  // idSessaoifica o usuario que esta logado
 int excedido = 0;  // variavel de controle
 int idvenda = 0;   // Id de cada venda registrada
+int position;
 char senhaADM[] = "1234";
 char senhaAdmin[MAX_SENHA];
-int position;
+char debito[] = "debito";
 char adm[] = "adm";
 char caixa[] = "caixa";
 estrutura user[MAX_USUARIOS];
@@ -752,141 +767,164 @@ int obterOpcao()
 void cadastrarVenda()
 {
     float precokg, valorkg, x;
-    char entrada[MAX_PRODUTO];
+    char entrada[100];
     char pesokg[10];
     char opcao[10];
     char nomeproduto[MAX_NOME];
+    char desc[100];
     int id = -1;           // Inicialmente, nenhum ID
     int produtoIndex = -1; // Índice do produto, se encontrado
     structvendas novavenda;
 
     limpar_tela();
-    menuProdutos();
 
-    printf("\n\n\tInforme o id ou nome do produto que deseja vender: ");
-    if (fgets(entrada, sizeof(entrada), stdin) != NULL)
+    printf("1. Vender produto\n");
+    printf("2. Venda avulsa\n");
+    printf("3. Voltar\n");
+
+    if (fgets(opcao, sizeof(opcao), stdin) != NULL)
     {
-        entrada[strcspn(entrada, "\n")] = '\0';
-        remove_espacos(entrada);
-            toLowerCase(entrada);
+        int escolha = atoi(opcao);
+        printf("%i", escolha);
 
-        limpar_tela();
-
-        // Verifica se a entrada pode ser convertida para ID
-        id = atoi(entrada);
-
-        // Tenta encontrar o produto pelo ID ou pelo nome
-
-        if (id > 0 && id <= MAX_VENDAS && produto[id - 1].preco > 0)
+        switch (escolha)
         {
-            produtoIndex = id - 1; // Encontrado pelo ID
-        }
-        else
-        {
-            // Se não encontrou pelo ID, procura pelo nome
-            for (int i = 0; i < MAX_VENDAS; i++)
+        case 1:
+            menuProdutos();
+            printf("\n\n\tInforme o id ou nome do produto que deseja vender: ");
+            if (fgets(entrada, sizeof(entrada), stdin) != NULL)
             {
-                if (strcmp(produto[i].nome, entrada) == 0 && produto[i].preco > 0)
+                entrada[strcspn(entrada, "\n")] = '\0';
+                remove_espacos(entrada);
+                toLowerCase(entrada);
+
+                limpar_tela();
+
+                // Verifica se a entrada pode ser convertida para ID
+                id = atoi(entrada);
+
+                // Tenta encontrar o produto pelo ID ou pelo nome
+
+                if (id > 0 && id <= MAX_VENDAS && produto[id - 1].preco > 0)
                 {
-                    produtoIndex = i;
-                    break;
+                    produtoIndex = id - 1; // Encontrado pelo ID
                 }
-            }
-        }
-
-        // Verifica se o produto foi encontrado
-        if (produtoIndex >= 0)
-        {
-            strcpy(nomeproduto, produto[produtoIndex].nome);
-            precokg = produto[produtoIndex].preco;
-
-            printf("\n\t%s R$%.2f/KG.\n\t\n\tInsira a quantidade de KGs: ", nomeproduto, precokg);
-            if (fgets(pesokg, sizeof(pesokg), stdin) != NULL)
-            {
-                pesokg[strcspn(pesokg, "\n")] = '\0';
-                valorkg = strtof(pesokg, NULL);
-
-                x = valorkg * precokg;
-                if (x > 0)
+                else
                 {
-                    printf("\n\tValor a pagar: R$%.2f\n", x);
-                    printf("\t1 - Confirma\n\t2 - Cancela\n\tEscolha: ");
-
-                    // le a escolha do usuário
-                    if (fgets(opcao, sizeof(opcao), stdin) != NULL)
+                    // Se não encontrou pelo ID, procura pelo nome
+                    for (int i = 0; i < MAX_VENDAS; i++)
                     {
-                        int escolha = atoi(opcao);
-
-                        switch (escolha)
+                        if (strcmp(produto[i].nome, entrada) == 0 && produto[i].preco > 0)
                         {
-                        case 1:
-                        { // Confirma
-                            FILE *relatorioVendas = fopen("relatorioVendas.txt", "r");
-                            if (relatorioVendas != NULL)
+                            produtoIndex = i;
+                            break;
+                        }
+                    }
+                }
+
+                // Verifica se o produto foi encontrado
+                if (produtoIndex >= 0)
+                {
+                    strcpy(nomeproduto, produto[produtoIndex].nome);
+                    precokg = produto[produtoIndex].preco;
+
+                    printf("\n\t%s R$%.2f/KG.\n\t\n\tInsira a quantidade de KGs: ", nomeproduto, precokg);
+                    if (fgets(pesokg, sizeof(pesokg), stdin) != NULL)
+                    {
+                        pesokg[strcspn(pesokg, "\n")] = '\0';
+                        valorkg = strtof(pesokg, NULL);
+
+                        x = valorkg * precokg;
+                        if (x > 0)
+                        {
+                            printf("\n\tValor a pagar: R$%.2f\n", x);
+                            printf("\t1 - Confirma\n\t2 - Cancela\n\tEscolha: ");
+
+                            // le a escolha do usuário
+                            if (fgets(opcao, sizeof(opcao), stdin) != NULL)
                             {
-                                // Le a quant de linhas do relatorio de vendas e atribui no idvenda
-                                int idvenda = 0;
-                                char buffer[MAX_PRODUTO];
-                                while (fgets(buffer, sizeof(buffer), relatorioVendas) != NULL)
+                                int escolha = atoi(opcao);
+
+                                switch (escolha)
                                 {
-                                    idvenda++;
+                                case 1:
+                                { // Confirma
+                                    FILE *relatorioVendas = fopen("relatorioVendas.txt", "r");
+                                    if (relatorioVendas != NULL)
+                                    {
+                                        // Le a quant de linhas do relatorio de vendas e atribui no idvenda
+                                        idvenda = 0;
+                                        char buffer[MAX_PRODUTO];
+                                        while (fgets(buffer, sizeof(buffer), relatorioVendas) != NULL)
+                                        {
+                                            idvenda++;
+                                        }
+                                        fclose(relatorioVendas);
+
+                                        // Recebe o horario atual para a venda
+                                        time_t agora;
+                                        time(&agora);
+
+                                        struct tm *local = localtime(&agora);
+
+                                        char hora[80];
+                                        strftime(hora, sizeof(hora), "%Y-%m-%d %H:%M:%S", local);
+
+                                        strcpy(novavenda.horariovenda, hora);
+
+                                        // Atualiza a nova venda no array de nova venda
+                                        novavenda.id = idvenda;
+                                        strcpy(novavenda.vendedor, user[idSessao].nome);
+                                        novavenda.preco = x;
+                                        strcpy(novavenda.produto, nomeproduto);
+                                        strcpy(novavenda.pagamento, "relatorio");
+                                        // Armazena a venda no array de vendas
+                                        vendas[idvenda] = novavenda;
+
+                                        // Adiciona a nova venda ao arquivo
+                                        relatorioVendas = fopen("relatorioVendas.txt", "a");
+                                        if (relatorioVendas != NULL)
+                                        {
+                                            fprintf(relatorioVendas, "ID:%i|R$%.2f|%s|%s|%s|%s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].produto, vendas[idvenda].vendedor, vendas[idvenda].pagamento, vendas[idvenda].horariovenda);
+                                            fclose(relatorioVendas);
+                                        }
+                                        else
+                                        {
+                                            perror("ERRO AO ABRIR ARQUIVO");
+                                            return;
+                                        }
+
+                                        // Imprime a venda adicionada
+                                        limpar_tela();
+                                        printf("\nVenda confirmada: ");
+                                        printf("Venda concluida: ID:%i | R$%.2f | %s | %s | %s | %s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].produto, vendas[idvenda].vendedor, vendas[idvenda].pagamento, vendas[idvenda].horariovenda);
+                                        getch();
+                                    }
+                                    else
+                                    {
+                                        perror("ERRO AO ABRIR ARQUIVO");
+                                        return;
+                                    }
+                                    break;
                                 }
-                                fclose(relatorioVendas);
 
-                                // Recebe o horario atual para a venda
-                                time_t agora;
-                                time(&agora);
+                                case 2: // Cancela
+                                    printf("Venda cancelada.\n");
+                                    break;
 
-                                struct tm *local = localtime(&agora);
-
-                                char hora[80];
-                                strftime(hora, sizeof(hora), "%Y-%m-%d %H:%M:%S", local);
-
-                                strcpy(novavenda.horariovenda, hora);
-
-                                // Atualiza a nova venda no array de nova venda
-                                novavenda.id = idvenda;
-                                strcpy(novavenda.vendedor, user[idSessao].nome);
-                                novavenda.preco = x;
-                                strcpy(novavenda.produto, nomeproduto);
-
-                                // Armazena a venda no array de vendas
-                                vendas[idvenda] = novavenda;
-
-                                // Adiciona a nova venda ao arquivo
-                                relatorioVendas = fopen("relatorioVendas.txt", "a");
-                                if (relatorioVendas != NULL)
-                                {
-                                    fprintf(relatorioVendas, "ID:%i|R$%.2f|%s|%s|%s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].produto, vendas[idvenda].vendedor, vendas[idvenda].horariovenda);
-                                    fclose(relatorioVendas);
+                                default:
+                                    printf("Opção inválida. Venda não confirmada.\n");
+                                    break;
                                 }
-                                else
-                                {
-                                    perror("ERRO AO ABRIR ARQUIVO");
-                                    return;
-                                }
-
-                                // Imprime a venda adicionada
-                                limpar_tela();
-                                printf("\nVenda confirmada: ");
-                                printf("ID:%i|R$%.2f|%s|%s|%s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].produto, vendas[idvenda].vendedor, vendas[idvenda].horariovenda);
-                                getch();
                             }
                             else
                             {
-                                perror("ERRO AO ABRIR ARQUIVO");
-                                return;
+                                printf("ERRO DE LEITURA\n");
                             }
-                            break;
                         }
-
-                        case 2: // Cancela
-                            printf("Venda cancelada.\n");
-                            break;
-
-                        default:
-                            printf("Opção inválida. Venda não confirmada.\n");
-                            break;
+                        else
+                        {
+                            perror("Invalido");
                         }
                     }
                     else
@@ -896,19 +934,95 @@ void cadastrarVenda()
                 }
                 else
                 {
-                    perror("Invalido");
+                    printf("Produto inexistente ou inválido!\n");
                 }
+            }
+            break;
+        case 2:
+            /*POSSO FAZER UM CATALOGO PARA VENDER PRODUTOS AVULSOS AQUI*/
+
+            printf("Informe um breve resumo: ");
+            fgets(desc, sizeof(desc), stdin);
+            desc[strcspn(desc, "\n")] = '\0';
+            printf("\n\tInforme o valor da venda: ");
+            fgets(entrada, sizeof(entrada), stdin);
+            entrada[strcspn(entrada, "\n")] = '\0';
+
+            if (contemLetras(entrada) == 1)
+            {
+                printf("Apenas numeros!");
+                getch();
+                return;
             }
             else
             {
-                printf("ERRO DE LEITURA\n");
+                float p = strtof(entrada, NULL); // converte a string entrada em float e atribui na variavel p
+
+                strcpy(novavenda.produto, desc);
+
+                
+
+                printf("\n\t1. Debito");
+                printf("\n\t2. Credito");
+                printf("\n\t3. Dinheiro");
+                printf("\n\t4. Cancelar");
+
+                if (fgets(opcao, sizeof(opcao), stdin))
+                {
+                    char buffer[100];
+                    // leio o relatorio de vendas para ter o ID da nova venda avulsa
+                    FILE *relatorioVendas = fopen("relatorioVendas.txt", "r");
+                    idvenda = 0;
+                    while (fgets(buffer, sizeof(buffer), relatorioVendas) != NULL)
+                    {
+                        idvenda++;
+                    }
+                    fclose(relatorioVendas);
+                    time_t now;
+                    time(&now);
+
+                    struct tm *local = localtime(&now);
+                    escolha = atoi(opcao);
+                    
+                    char hora[80];
+                    strftime(hora, sizeof(hora), "%Y-%m-%d %H:%M:%S", local);
+                    switch (escolha)
+                    {
+                    case 1:
+
+                        novavenda.id = idvenda;
+                        novavenda.preco = p;
+                        strcpy(novavenda.produto, desc);
+                        strcpy(novavenda.vendedor, user[idSessao].nome);
+                        strcpy(novavenda.horariovenda, hora);
+                        strcpy(novavenda.pagamento, debito);
+                        vendas[idvenda] = novavenda;
+
+                        FILE *relatorioVendas = fopen("relatorioVendas.txt", "a");
+                        printf("Venda concluida: ID:%i | R$%.2f | %s | %s | %s | %s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].produto, vendas[idvenda].vendedor, vendas[idvenda].pagamento, vendas[idvenda].horariovenda);
+
+                        fprintf(relatorioVendas, "ID:%i|R$%.2f|%s|%s|%s|%s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].produto, vendas[idvenda].vendedor, vendas[idvenda].pagamento, vendas[idvenda].horariovenda);
+                        fclose(relatorioVendas);
+                        getch();
+                        break;
+
+                    case 2:
+
+                        break;
+
+                    case 3:
+
+                        break;
+                    default:
+                        printf("opcao invalida");
+                    }
+                }
             }
-        }
-        else
-        {
-            printf("Produto inexistente ou inválido!\n");
+
+            break;
         }
     }
+
     else
     {
         printf("ERRO DE LEITURA\n");
@@ -928,13 +1042,24 @@ void relatorioVendasCaixa()
     printf("\n\t     CODIGO - VALOR - PRODUTO - VENDEDOR - HORARIO\n");
     while (fgets(buffer, sizeof(buffer), relatorioVendas) != NULL)
     {
-        sscanf(buffer, "ID:%i|R$%f|%[^|]|%[^|]|%[^\n]", &vendas[i].id, &vendas[i].preco, vendas[i].produto, vendas[i].vendedor, vendas[i].horariovenda);
-
+        sscanf(buffer, "ID:%i|R$%f|%[^|]|%[^|]|%[^|]|%[^\n]",
+               &vendas[i].id,
+               &vendas[i].preco,
+               vendas[i].produto,
+               vendas[i].vendedor,
+               vendas[i].pagamento,
+               vendas[i].horariovenda);
         // Filtra apenas as vendas do caixa logado
         if (strcmp(vendas[i].vendedor, user[idSessao].nome) == 0)
         {
 
-            printf("\n\t    ID %i - R$%.2f - %s - %s - %s\n", vendas[i].id, vendas[i].preco, vendas[i].produto, vendas[i].vendedor, vendas[i].horariovenda);
+            printf("\n\t    ID %i - R$%.2f - %s - %s - %s - %s\n",
+                   vendas[i].id,
+                   vendas[i].preco,
+                   vendas[i].produto,
+                   vendas[i].vendedor,
+                   vendas[i].pagamento,
+                   vendas[i].horariovenda);
         }
         i++;
     }
@@ -949,22 +1074,36 @@ void relatorioVendas()
         perror("ARQUIVO VAZIO");
         return;
     }
-    // endereca as vendas toda vez que e chamado
+
+    // Endereça as vendas toda vez que é chamado
     int i = 0;
     char buffer[MAX_PRODUTO];
     while (fgets(buffer, sizeof(buffer), relatorioVendas) != NULL)
     {
-        sscanf(buffer, "ID:%i|R$%f|%[^|]|%[^|]|%[^\n]", &vendas[i].id, &vendas[i].preco, vendas[i].produto, vendas[i].vendedor, vendas[i].horariovenda);
+        // Corrigido o formato para ler os campos
+        sscanf(buffer, "ID:%i|R$%f|%[^|]|%[^|]|%[^|]|%[^\n]",
+               &vendas[i].id,
+               &vendas[i].preco,
+               vendas[i].produto,
+               vendas[i].vendedor,
+               vendas[i].pagamento,
+               vendas[i].horariovenda);
         i++;
     }
-    // limpabuffer();
-    //  printf("%i|%.2f|%s\n", vendas[5].id, vendas[5].preco, vendas[5].nome);
+
     fclose(relatorioVendas);
-    printf("\tCODIGO - VALOR - PRODUTO - VENDEDOR - HORARIO\n");
-    // Exibindo o relatório das vendas2
+
+    printf("\tCODIGO - VALOR - PRODUTO - VENDEDOR - PAGAMENTO - HORARIO\n");
+    // Exibindo o relatório das vendas
     for (int j = 0; j < i; j++)
     {
-        printf("\n\t    ID %i - R$%.2f - %s - %s - %s\n", vendas[j].id, vendas[j].preco, vendas[j].produto, vendas[j].vendedor, vendas[j].horariovenda);
+        printf("\n\t    ID %i - R$%.2f - %s - %s - %s - %s\n",
+               vendas[j].id,
+               vendas[j].preco,
+               vendas[j].produto,
+               vendas[j].vendedor,
+               vendas[j].pagamento,
+               vendas[j].horariovenda);
     }
 }
 int menuADM()

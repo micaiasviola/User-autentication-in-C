@@ -1,4 +1,0 @@
-1|manga|12,00
-2|banana|16,87
-3|morango|19,90
-4|laranja|9,00
