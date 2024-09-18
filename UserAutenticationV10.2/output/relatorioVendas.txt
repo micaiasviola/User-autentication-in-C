@@ -14,3 +14,10 @@ ID:13|R$454,50|pocan|adm1|relatorio|2024-09-17 23:17:12
 ID:14|R$1,00|1|1234|debito|2024-09-17 23:25:43
 ID:15|R$10,00|chiclete|caixa1|debito|2024-09-17 23:28:26
 ID:15|R$303,00|pocan|1234|relatorio|2024-09-17 23:30:16
+ID:16|R$60,00|bananadoce|123456|relatorio|2024-09-18 12:06:44
+ID:17|R$17,78|Shamppoo do CR7|123456|debito|2024-09-18 12:07:28
+ID:18|R$454,50|pocan|1234|relatorio|2024-09-18 12:24:01
+ID:19|R$5,00|2|123456|debito|2024-09-18 12:48:55
+ID:20|R$15,00|Papel|1234|debito|2024-09-18 12:57:07
+ID:21|R$50,50|18/09|caixa|debito|2024-09-18 13:00:41
+ID:22|R$454,50|pocan|adm1|relatorio|2024-09-18 13:08:49

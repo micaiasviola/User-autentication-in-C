@@ -4,7 +4,8 @@
 
 ## Versão 10.2 em desenvolvimento
 
-- Inclusão da forma de pagamento/troco no relatorio das vendas
+- Inclusão da forma de pagamento no relatorio das vendas.
+- Inclusão de venda avulsa.
 
 ## Versão 10.1
 

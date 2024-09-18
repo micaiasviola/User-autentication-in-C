@@ -43,7 +43,7 @@ int contemLetras(const char *str)
     return 0; // Retorna 0 se não encontrar nenhuma letra
 }
 
-void toLowerCase(char *str)
+void toLowerCase(char *str) // transforma maisculo em minusculo
 {
 
     int i = 0;
@@ -785,19 +785,25 @@ void cadastrarVenda()
     if (fgets(opcao, sizeof(opcao), stdin) != NULL)
     {
         int escolha = atoi(opcao);
-        printf("%i", escolha);
+        // printf("%i", escolha);
 
         switch (escolha)
         {
         case 1:
+
             menuProdutos();
-            printf("\n\n\tInforme o id ou nome do produto que deseja vender: ");
+            printf("\n\n\tInforme o id/nome do produto que deseja vender: ");
             if (fgets(entrada, sizeof(entrada), stdin) != NULL)
             {
+                
                 entrada[strcspn(entrada, "\n")] = '\0';
                 remove_espacos(entrada);
                 toLowerCase(entrada);
-
+                if (strlen(entrada) < 1)
+                {
+                    printf("Produto invalido");
+                    return;
+                }
                 limpar_tela();
 
                 // Verifica se a entrada pode ser convertida para ID
@@ -909,7 +915,7 @@ void cadastrarVenda()
                                 }
 
                                 case 2: // Cancela
-                                    printf("Venda cancelada.\n");
+                                    printf("\tVenda cancelada.\n");
                                     break;
 
                                 default:
@@ -940,86 +946,134 @@ void cadastrarVenda()
             break;
         case 2:
             /*POSSO FAZER UM CATALOGO PARA VENDER PRODUTOS AVULSOS AQUI*/
-
-            printf("Informe um breve resumo: ");
+            limpar_tela();
+            printf("\tInforme um breve resumo: ");
             fgets(desc, sizeof(desc), stdin);
             desc[strcspn(desc, "\n")] = '\0';
-            printf("\n\tInforme o valor da venda: ");
-            fgets(entrada, sizeof(entrada), stdin);
-            entrada[strcspn(entrada, "\n")] = '\0';
-
-            if (contemLetras(entrada) == 1)
+            toLowerCase(desc);
+            if (strlen(desc) > 0)
             {
-                printf("Apenas numeros!");
-                getch();
-                return;
-            }
-            else
-            {
-                float p = strtof(entrada, NULL); // converte a string entrada em float e atribui na variavel p
+                printf("\n\tInforme o valor da venda: R$");
+                fgets(entrada, sizeof(entrada), stdin);
+                entrada[strcspn(entrada, "\n")] = '\0';
 
-                strcpy(novavenda.produto, desc);
-
-                
-
-                printf("\n\t1. Debito");
-                printf("\n\t2. Credito");
-                printf("\n\t3. Dinheiro");
-                printf("\n\t4. Cancelar");
-
-                if (fgets(opcao, sizeof(opcao), stdin))
+                if (contemLetras(entrada) == 1)
                 {
-                    char buffer[100];
-                    // leio o relatorio de vendas para ter o ID da nova venda avulsa
-                    FILE *relatorioVendas = fopen("relatorioVendas.txt", "r");
-                    idvenda = 0;
-                    while (fgets(buffer, sizeof(buffer), relatorioVendas) != NULL)
+                    printf("Apenas numeros!");
+                    getch();
+                    return;
+                }
+                else
+                {
+                    float p = strtof(entrada, NULL); // converte a string entrada em float e atribui na variavel p
+                    if (p <= 0)
                     {
-                        idvenda++;
+                        printf("Insira um valor valido!");
+                        return;
                     }
-                    fclose(relatorioVendas);
-                    time_t now;
-                    time(&now);
+                    strcpy(novavenda.produto, desc);
 
-                    struct tm *local = localtime(&now);
-                    escolha = atoi(opcao);
-                    
-                    char hora[80];
-                    strftime(hora, sizeof(hora), "%Y-%m-%d %H:%M:%S", local);
-                    switch (escolha)
+                    printf("\n\t1. Debito");
+                    printf("\n\t2. Credito");
+                    printf("\n\t3. Dinheiro");
+                    printf("\n\t4. Cancelar\n");
+                    printf("\t");
+                    if (fgets(opcao, sizeof(opcao), stdin) && p > 0)
                     {
-                    case 1:
-
-                        novavenda.id = idvenda;
-                        novavenda.preco = p;
-                        strcpy(novavenda.produto, desc);
-                        strcpy(novavenda.vendedor, user[idSessao].nome);
-                        strcpy(novavenda.horariovenda, hora);
-                        strcpy(novavenda.pagamento, debito);
-                        vendas[idvenda] = novavenda;
-
-                        FILE *relatorioVendas = fopen("relatorioVendas.txt", "a");
-                        printf("Venda concluida: ID:%i | R$%.2f | %s | %s | %s | %s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].produto, vendas[idvenda].vendedor, vendas[idvenda].pagamento, vendas[idvenda].horariovenda);
-
-                        fprintf(relatorioVendas, "ID:%i|R$%.2f|%s|%s|%s|%s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].produto, vendas[idvenda].vendedor, vendas[idvenda].pagamento, vendas[idvenda].horariovenda);
+                        char buffer[100];
+                        // leio o relatorio de vendas para ter o ID da nova venda avulsa
+                        FILE *relatorioVendas = fopen("relatorioVendas.txt", "r");
+                        idvenda = 0;
+                        while (fgets(buffer, sizeof(buffer), relatorioVendas) != NULL)
+                        {
+                            idvenda++;
+                        }
                         fclose(relatorioVendas);
-                        getch();
-                        break;
+                        time_t now;
+                        time(&now);
 
-                    case 2:
+                        struct tm *local = localtime(&now);
+                        escolha = atoi(opcao);
 
-                        break;
+                        char hora[80];
+                        strftime(hora, sizeof(hora), "%Y-%m-%d %H:%M:%S", local);
+                        switch (escolha)
+                        {
+                        case 1:
 
-                    case 3:
+                            novavenda.id = idvenda;
+                            novavenda.preco = p;
+                            strcpy(novavenda.produto, desc);
+                            strcpy(novavenda.vendedor, user[idSessao].nome);
+                            strcpy(novavenda.horariovenda, hora);
+                            strcpy(novavenda.pagamento, debito);
+                            vendas[idvenda] = novavenda;
 
-                        break;
-                    default:
-                        printf("opcao invalida");
+                            FILE *relatorioVendas = fopen("relatorioVendas.txt", "a");
+                            limpar_tela();
+                            printf("\n\tResumo da venda a ser cadastrada:\n");
+                            printf("\tNome: %s\n", vendas[idvenda].produto);
+                            printf("\tPreco por kg: R$%.2f\n", vendas[idvenda].preco);
+                            printf("\tForma de pagamento: %s\n", vendas[idvenda].pagamento);
+                            printf("\t1 - Confirma\n\t2 - Cancela\n\tEscolha: ");
+                            if (fgets(opcao, sizeof(opcao), stdin) != NULL)
+                            {
+                                if (verificastringdigito(opcao))
+                                {
+                                    escolha = atoi(opcao);
+                                    switch (escolha)
+                                    {
+                                    case 1:
+                                        printf("Venda concluida: ID:%i | R$%.2f | %s | %s | %s | %s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].produto, vendas[idvenda].vendedor, vendas[idvenda].pagamento, vendas[idvenda].horariovenda);
+                                        fprintf(relatorioVendas, "ID:%i|R$%.2f|%s|%s|%s|%s\n", vendas[idvenda].id, vendas[idvenda].preco, vendas[idvenda].produto, vendas[idvenda].vendedor, vendas[idvenda].pagamento, vendas[idvenda].horariovenda);
+                                        fclose(relatorioVendas);
+                                        return;
+                                        break;
+                                    case 2:
+                                        printf("Cancelando a compra");
+                                        return;
+                                        break;
+                                    default:
+                                        printf("Opcao invalida");
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    printf("Opcao invalida!");
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                printf("Opcao invalida!");
+                                return;
+                            }
+
+                            break;
+
+                        case 2:
+
+                            break;
+
+                        case 3:
+
+                            break;
+                        default:
+                            printf("opcao invalida");
+                        }
                     }
                 }
             }
+            else
+            {
+                printf("Insira uma descricao!");
+                return;
+            }
 
             break;
+        default:
+            return;
         }
     }
 
@@ -1080,7 +1134,7 @@ void relatorioVendas()
     char buffer[MAX_PRODUTO];
     while (fgets(buffer, sizeof(buffer), relatorioVendas) != NULL)
     {
-        // Corrigido o formato para ler os campos
+        // optei por usar o sscanf inves do strtok por que quero tratar a string toda e nao apenas uma parte
         sscanf(buffer, "ID:%i|R$%f|%[^|]|%[^|]|%[^|]|%[^\n]",
                &vendas[i].id,
                &vendas[i].preco,
@@ -1092,7 +1146,6 @@ void relatorioVendas()
     }
 
     fclose(relatorioVendas);
-
     printf("\tCODIGO - VALOR - PRODUTO - VENDEDOR - PAGAMENTO - HORARIO\n");
     // Exibindo o relatório das vendas
     for (int j = 0; j < i; j++)
@@ -1239,7 +1292,7 @@ int main()
 {
     setlocale(LC_ALL, "Portuguese");
     int opcao;
-    menuProdutos();
+    // menuProdutos();
     lerUsuarios();
     lerProduto();
     limpar_tela();

@@ -11,6 +11,5 @@
 11|mandiocadaterra|12,00
 12|bananananica|18,89
 13|batatadoce|15,00
-14|rucula|8,00
-15|jabuticaba|50,00
-16|papaya|98,00
+14|jabuticaba|50,00
+15|papaya|98,00
