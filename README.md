@@ -1,58 +1,37 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://github.com/micaiasviola/User-autentication-in-C/tree/main/style">
-   
-</head>
-<body>
+# Patch Notes
 
-<a href="#" class="download-link"><p>Baixar versão mais recente</p></a>
+[**Baixar versão mais recente**](#)
 
-<h1 class="version-header">Versão 10.1 - Em Desenvolvimento</h1>
-<p class="version">Patch Notes:</p>
-<ul>
-    <li>Agora é possível identificar produtos tanto pelo nome quanto pelo ID para lançamento de vendas.</li>
-    <li>Verificação de dígitos para cadastro de produtos.</li>
-    <li>Tratamento dos caracteres de "barra de espaço" para melhor interpretação pelo código.</li>
-    <li>Implementação das informações do relatório de vendas e menu de produtos.</li>
-    <li>Atualização da interface de usuário (UI).</li>
-    <li>Correção de bugs que permitiam a inserção de caracteres inválidos no cadastro de produtos.</li>
-    <li>Atualização da leitura de nomes de usuários e produtos: agora a comparação não diferencia entre maiúsculas e minúsculas.</li>
-</ul>
+## Versão 10.1 - Em Desenvolvimento
 
-<h1 class="version-header">Versão 10.0</h1>
-<p class="version">Patch Notes:</p>
-<ul>
-    <li>Atualização da interface de usuário (UI).</li>
-    <li>Opção para remoção de produtos disponível para contas de Administrador (ADM).</li>
-    <li>Inclusão do horário no relatório de vendas.</li>
-</ul>
+- Agora é possível identificar produtos tanto pelo nome quanto pelo ID para lançamento de vendas.
+- Verificação de dígitos para cadastro de produtos.
+- Tratamento dos caracteres de "barra de espaço" para melhor interpretação pelo código.
+- Implementação das informações do relatório de vendas e menu de produtos.
+- Atualização da interface de usuário (UI).
+- Correção de bugs que permitiam a inserção de caracteres inválidos no cadastro de produtos.
+- Atualização da leitura de nomes de usuários e produtos: agora a comparação não diferencia entre maiúsculas e minúsculas.
 
-<h1 class="version-header">Versão 9.9</h1>
-<p class="version">Patch Notes:</p>
-<ul>
-    <li>Relatório de vendas separado por funcionário.</li>
-</ul>
+## Versão 10.0
 
-<h1 class="version-header">Versão 9.8</h1>
-<p class="version">Patch Notes:</p>
-<ul>
-    <li>Função para lançamento de vendas.</li>
-    <li>Banco de dados para relatório de vendas.</li>
-    <li>Correção de bugs de redundância no sistema.</li>
-    <li>Opção de confirmação/cancelamento no cadastro de vendas e alteração de produtos.</li>
-</ul>
+- Atualização da interface de usuário (UI).
+- Opção para remoção de produtos disponível para contas de Administrador (ADM).
+- Inclusão do horário no relatório de vendas.
 
-<h1 class="version-header">Versão 9.7</h1>
-<p class="version">Patch Notes:</p>
-<ul>
-    <li>Cadastro de produtos.</li>
-    <li>Função de alteração dos valores dos produtos.</li>
-    <li>Identificação de cargos: Administrador (ADM) ou Caixa.</li>
-    <li>Menu para consulta de produtos.</li>
-</ul>
+## Versão 9.9
 
-</body>
-</html>
+- Relatório de vendas separado por funcionário.
+
+## Versão 9.8
+
+- Função para lançamento de vendas.
+- Banco de dados para relatório de vendas.
+- Correção de bugs de redundância no sistema.
+- Opção de confirmação/cancelamento no cadastro de vendas e alteração de produtos.
+
+## Versão 9.7
+
+- Cadastro de produtos.
+- Função de alteração dos valores dos produtos.
+- Identificação de cargos: Administrador (ADM) ou Caixa.
+- Menu para consulta de produtos.
