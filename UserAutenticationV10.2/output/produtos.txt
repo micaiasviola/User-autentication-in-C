@@ -13,3 +13,4 @@
 13|batatadoce|15,00
 14|jabuticaba|50,00
 15|papaya|98,00
+16|figo|19,90
