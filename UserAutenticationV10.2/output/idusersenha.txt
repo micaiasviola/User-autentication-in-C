@@ -13,5 +13,4 @@
 13|123456789|123456789|adm
 14|mica|1234|adm
 15|micaiasviola|1234|adm
-16|thomasshota|1234|caixa
-17|adm1234|1234|adm
+16|adm1234|1234|adm
