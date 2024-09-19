@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h> // Para usar `exit()`
+#include <stdlib.h> 
 #include <locale.h>
-#include <setjmp.h>
 #include <conio.h>
 #include <time.h>
 #include <ctype.h>   // para usar isalpha, digit, isspace, tolower
