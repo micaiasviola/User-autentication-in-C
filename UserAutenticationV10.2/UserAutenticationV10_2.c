@@ -959,7 +959,7 @@ void cadastrarVenda()
 
                 if (contemLetras(entrada) == 1)
                 {
-                    printf("Apenas numeros!");
+                    printf("\tApenas numeros!");
                     getch();
                     return;
                 }
@@ -1367,8 +1367,7 @@ int menuCAIXA()
                 {
                 case 1:
                     printf("Efetuar Venda");
-                    cadastrarVenda();
-                    getch();
+                    cadastrarVenda();                    
                     break;
                 case 2:
                     printf("\n\tConsultar Precos\n");
