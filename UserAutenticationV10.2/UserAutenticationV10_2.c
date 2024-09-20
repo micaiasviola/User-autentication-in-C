@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <locale.h>
 #include <conio.h>
 #include <time.h>
@@ -794,7 +794,7 @@ void cadastrarVenda()
             printf("\n\n\tInforme o id/nome do produto que deseja vender: ");
             if (fgets(entrada, sizeof(entrada), stdin) != NULL)
             {
-                
+
                 entrada[strcspn(entrada, "\n")] = '\0';
                 remove_espacos(entrada);
                 toLowerCase(entrada);
