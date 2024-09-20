@@ -120,7 +120,7 @@ typedef struct
 structproduto produto[MAX_PRODUTO];
 
 /***VARIAVEIS GLOBAIS****/
-int idUsuario = 0; // inicia o id sempre em 0 para comeÃÂ§ar a varredura
+int idUsuario = 0; // inicia o id sempre em 0 
 int idproduto = 0; // contem o id de cada produto cadastrado
 int idSessao = 0;  // idSessaoifica o usuario que esta logado
 int excedido = 0;  // variavel de controle
@@ -394,7 +394,7 @@ void cadastrarProduto()
                 }
                 // Se o produto não existe, solicitar preco e confirmar o cadastro
                 limpar_tela();
-                printf("\n\tInsira o preco do KG kg do(a) %s: ", entrada);
+                printf("\n\tInsira o preco do KG do(a) %s: ", entrada);
                 char novopreco[15];
                 if (fgets(novopreco, sizeof(novopreco), stdin) != NULL)
                 {
