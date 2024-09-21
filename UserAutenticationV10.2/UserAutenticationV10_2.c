@@ -127,7 +127,7 @@ int idproduto = 0; // contem o id de cada produto cadastrado
 int idSessao = 0;  // idSessaoifica o usuario que esta logado
 int excedido = 0;  // variavel de controle
 int idvenda = 0;   // Id de cada venda registrada
-int position;
+int position = 0;
 char senhaADM[] = "1234";
 char senhaAdmin[MAX_SENHA];
 char debito[] = "debito";
