@@ -1212,7 +1212,7 @@ void relatorioVendasCaixa()
     {
         sscanf(buffer, "ID:%i|R$%f|%[^|]|%[^|]|%[^|]|%[^\n]",
                &vendas[i].id,
-               &vendas[i].preco,
+               &vendas[i].preco, 
                vendas[i].produto,
                vendas[i].vendedor,
                vendas[i].pagamento,
